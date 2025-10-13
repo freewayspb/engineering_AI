@@ -4,15 +4,15 @@ Date: 01.10.2025
 
 ---
 
-## 1. Prototype-level KPIs
+## 1. Prototype-level KPIs (POC)
 
-| Prototype | Goal | Metrics | Target (TBD) | Notes |
-|---|---|---|---|---|
-| OCR | Reliable recognition on client samples | CER/WER; Processing time per doc | CER/WER ≤ [TBD_Discuss]; ≤ 30s | Noise/quality sensitivity captured in test set |
-| Structuring | Valid structured outputs | Valid records %; Schema errors | ≥ 99% valid | JSON Schema as reference |
-| Classification | Thematic assignment | macro‑F1; Coverage | macro‑F1 ≥ [TBD_Discuss] | Category set agreed with client |
-| DWG parsing | Minimal attributes extracted | Entities/attributes coverage | [TBD_Discuss] | Define minimal DWG entities list |
-| Estimates (ARP/GSFX) | Minimal fields extracted | Key fields completeness | [TBD_Discuss] | Define minimal fields list |
+| Prototype | Goal | Metrics | Target (TBD_Discuss) | Notes | Status | Reason | Recommendation | Decision |
+|---|---|---|---|---|---|---|---|---|
+| OCR | Reliable recognition on client samples | CER/WER; Processing time per doc | CER/WER ≤ [TBD_Discuss]; ≤ 30s | Noise/quality sensitivity captured in test set |  |  |  | Proceed/Iterate/Pivot/Stop |
+| Structuring | Valid structured outputs | Valid records %; Schema errors | ≥ 99% valid | JSON Schema as reference |  |  |  | Proceed/Iterate/Pivot/Stop |
+| Classification | Thematic assignment | macro‑F1; Coverage | macro‑F1 ≥ [TBD_Discuss] | Category set agreed with client |  |  |  | Proceed/Iterate/Pivot/Stop |
+| DWG parsing | Minimal attributes extracted | Entities/attributes coverage | [TBD_Discuss] | Define minimal DWG entities list |  |  |  | Proceed/Iterate/Pivot/Stop |
+| Estimates (ARP/GSFX) | Minimal fields extracted | Key fields completeness | [TBD_Discuss] | Define minimal fields list |  |  |  | Proceed/Iterate/Pivot/Stop |
 
 ---
 
