@@ -10,16 +10,16 @@
 ## 🎯 Быстрая навигация для новых аналитиков
 
 ### 📋 Начните здесь (5 минут)
-1. **[Vision Document](docs/requirements/vision.md)** - общее понимание проекта
-2. **[Project History](docs/project-management/history.md)** - текущее состояние
-3. **[Work Plan](docs/project-management/work-plan.md)** - план работы БА
+1. **[Vision Document](documentation/requirements/vision.md)** - общее понимание проекта
+2. **[Project History](documentation/project-management/history.md)** - текущее состояние
+3. **[Work Plan](documentation/project-management/work-plan.md)** - план работы БА
 
 ### 🔍 Детальная работа (15 минут)
-4. **[Business Requirements](docs/requirements/brd.md)** - приоритизированные требования
-5. **[Technical Requirements](docs/requirements/srs.md)** - технические спецификации
-6. **[Interview Checklist](docs/interviews/checklist.md)** - подготовка к интервью
-7. **[Use Cases](docs/requirements/use-cases.md)** - сценарии использования
-8. **[Prototypes](docs/prototypes/README.md)** - планы реализации прототипов
+4. **[Business Requirements](documentation/requirements/brd.md)** - приоритизированные требования
+5. **[Technical Requirements](documentation/requirements/srs.md)** - технические спецификации
+6. **[Interview Checklist](documentation/interviews/checklist.md)** - подготовка к интервью
+7. **[Use Cases](documentation/requirements/use-cases.md)** - сценарии использования
+8. **[Prototypes](documentation/prototypes/README.md)** - планы реализации прототипов
 
 ---
 
