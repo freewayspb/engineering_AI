@@ -54,14 +54,7 @@
 | `02_Meeting_Cheatsheet_RU.md` | `archive/deprecated/` | 🔄 Архив |
 | `Interview_Report_Template.md` | `docs/interviews/templates/` | ✅ Перемещен |
 
-### Tooling → `/docs/tooling/`
-| Исходный файл | Новый путь | Статус |
-|---------------|------------|--------|
-| `Translation_Progress.md` | `docs/tooling/translation/` | ✅ Перемещен |
-| `Translation_Prompt.md` | `docs/tooling/translation/` | ✅ Перемещен |
-| `SPEAKER_DIARIZATION.md` | `docs/tooling/setup/` | ✅ Перемещен |
-| `WHISPER_SETUP.md` | `docs/tooling/setup/` | ✅ Перемещен |
-| `scripts/` | `docs/tooling/transcription/` | ✅ Перемещен |
+
 
 ### Media Files → `/assets/`
 | Исходный файл | Новый путь | Статус |
