@@ -8,11 +8,11 @@ Date: 01.10.2025
 
 | Prototype | Goal | Metrics | Target (TBD) | Notes |
 |---|---|---|---|---|
-| OCR | Reliable recognition on client samples | CER/WER; Processing time per doc | CER/WER ≤ [TBD]; ≤ 30s | Noise/quality sensitivity captured in test set |
+| OCR | Reliable recognition on client samples | CER/WER; Processing time per doc | CER/WER ≤ [TBD_Discuss]; ≤ 30s | Noise/quality sensitivity captured in test set |
 | Structuring | Valid structured outputs | Valid records %; Schema errors | ≥ 99% valid | JSON Schema as reference |
-| Classification | Thematic assignment | macro‑F1; Coverage | macro‑F1 ≥ [TBD] | Category set agreed with client |
-| DWG parsing | Minimal attributes extracted | Entities/attributes coverage | [TBD] | Define minimal DWG entities list |
-| Estimates (ARP/GSFX) | Minimal fields extracted | Key fields completeness | [TBD] | Define minimal fields list |
+| Classification | Thematic assignment | macro‑F1; Coverage | macro‑F1 ≥ [TBD_Discuss] | Category set agreed with client |
+| DWG parsing | Minimal attributes extracted | Entities/attributes coverage | [TBD_Discuss] | Define minimal DWG entities list |
+| Estimates (ARP/GSFX) | Minimal fields extracted | Key fields completeness | [TBD_Discuss] | Define minimal fields list |
 
 ---
 
