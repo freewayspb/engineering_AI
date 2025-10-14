@@ -1,189 +1,4 @@
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
-
-# Virtual environments
-.env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
-.venv_diar/
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-
-# OS
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-
-# Audio files (keep only in assets)
-*.m4a
-*.mp3
-*.wav
-*.aac
-
-# Large files
-*.zip
-*.tar.gz
-*.rar
-
-# Temporary files
-*.tmp
-*.temp
-*.log
-
-# Node modules (if any)
-node_modules/
-
-# Jupyter Notebook
-.ipynb_checkpoints
-
-# pyenv
-.python-version
-
-# pipenv
-Pipfile.lock
-
-# PEP 582
-__pypackages__/
-
-# Celery
-celerybeat-schedule
-celerybeat.pid
-
-# SageMath parsed files
-*.sage.py
-
-# Environments
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-
-# Spyder project settings
-.spyderproject
-.spyproject
-
-# Rope project settings
-.ropeproject
-
-# mkdocs documentation
-/site
-
-# mypy
-.mypy_cache/
-.dmypy.json
-dmypy.json
-
-# Pyre type checker
-.pyre/
-
-# OCR & model data
-.tessdata/
-*.traineddata
-
-# Project-specific exclusions
-# Keep only documentation, exclude code and artifacts
-
-# Code files
-*.py
-*.js
-*.ts
-*.java
-*.cpp
-*.c
-*.h
-*.go
-*.rs
-*.php
-*.rb
-*.sh
-*.bat
-*.ps1
-
-# Data files and artifacts
-*.csv
-*.json
-*.xml
-*.yaml
-*.yml
-*.toml
-*.ini
-*.cfg
-*.conf
-
-# Model files and weights
-*.pkl
-*.joblib
-*.h5
-*.pb
-*.onnx
-*.pt
-*.pth
-*.bin
-*.safetensors
-
-# Database files
-*.db
-*.sqlite
-*.sqlite3
-
-# Large documents (keep only essential ones)
-documentation/assets/input-documents/*.pdf
-documentation/assets/audio/*.m4a
-
-# Temporary and working files
-temp.txt
-*.tmp
-*.temp
-*.bak
-*.backup
-
-# Build artifacts
-build/
-dist/
-*.egg-info/
-
-# IDE and editor files
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-.project
-.settings/
+# AI GOST Project .gitignore
 
 # OS generated files
 .DS_Store
@@ -194,36 +9,93 @@ dist/
 ehthumbs.db
 Thumbs.db
 
-# Logs and debug files
+# IDE and Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Temporary files
+*.tmp
+*.temp
 *.log
-*.out
-*.err
-debug.log
-error.log
+*.bak
+*.backup
 
-# Cache directories
-.cache/
+# Audio files (keep only essential recordings)
+documentation/06-assets/audio/*.m4a
+!documentation/06-assets/audio/Recording*.m4a
+
+# Large PDF files (keep only essential documents)
+documentation/06-assets/input-documents/*.pdf
+!documentation/06-assets/input-documents/*АР*.pdf
+!documentation/06-assets/input-documents/*АС*.pdf
+
+# Build artifacts
+build/
+dist/
+*.o
+*.so
+*.dylib
+
+# Python (if any Python scripts are added)
 __pycache__/
-.pytest_cache/
-.mypy_cache/
-
-# Virtual environments
-venv/
+*.py[cod]
+*$py.class
+*.so
+.Python
 env/
+venv/
 .venv/
-.env/
+.venv_diar/
+ENV/
+env.bak/
+venv.bak/
 
-# Node.js
+# Node.js (if any Node.js tools are added)
 node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Jupyter
-.ipynb_checkpoints/
-
 # Docker
 .dockerignore
+docker-compose.override.yml
 
-# Git
-.git/
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Archive files (except essential ones)
+*.zip
+*.tar.gz
+*.rar
+*.7z
+
+# Large media files
+*.mp4
+*.avi
+*.mov
+*.wmv
+*.flv
+
+# Temporary documentation files
+documentation/temp/
+documentation/draft/
+documentation/working/
+
+# Personal notes and drafts
+*_personal.md
+*_draft.md
+*_working.md
+notes/
+personal/

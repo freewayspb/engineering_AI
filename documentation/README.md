@@ -1,131 +1,143 @@
 # AI GOST Project Documentation
 
-**Проект**: Создание локальной системы ИИ для автоматизированной обработки документов  
-**Заказчик**: ООО «ТДК-АЙТИ»  
-**Договор**: №24/25 от 30.09.2025  
-**Статус**: Этап анализа и разработки технического задания (30 дней)
+**Project**: Local AI system for automated document processing  
+**Customer**: LLC "TDK-IT"  
+**Contract**: #24/25 dated 30.09.2025  
+**Status**: Analysis and technical specification development stage (30 days)
 
 ---
 
-## 🎯 Быстрая навигация для новых аналитиков
+## Quick Navigation for New Analysts
 
-### 📋 Начните здесь (5 минут)
-1. **[Vision Document](requirements/vision.md)** - общее понимание проекта
-2. **[Project History](project-management/history.md)** - текущее состояние
-3. **[Work Plan](project-management/work-plan.md)** - план работы БА
+### Start Here (5 minutes)
+1. **[Project Vision](01-project-overview/project-vision.md)** - project understanding
+2. **[Project History](01-project-overview/project-history.md)** - current state
+3. **[Work Plan](04-project-management/work-plan.md)** - BA work plan
 
-### 🔍 Детальная работа (15 минут)
-4. **[Business Requirements](requirements/brd.md)** - приоритизированные требования
-5. **[Technical Requirements](requirements/srs.md)** - технические спецификации
-6. **[Metrics](requirements/metrics.md)** - целевые метрики и пороги
-7. **[Interview Checklist](interviews/checklist.md)** - подготовка к интервью
-8. **[Use Cases](requirements/use-cases.md)** - сценарии использования
-9. **[Prototypes](prototypes/README.md)** - планы реализации прототипов
-
----
-
-## 📁 Структура документации
-
-### `requirements/` - Стек требований
-| Файл | Описание | Статус |
-|------|----------|--------|
-| `vision.md` | Общее видение и цели проекта | ✅ Готов |
-| `brd.md` | Бизнес-требования по приоритетам | ✅ Готов |
-| `srs.md` | Технические требования | ✅ Готов |
-| `use-cases.md` | Сценарии использования | ✅ Готов |
-| `schemas/` | JSON-схемы и примеры данных | ✅ Готов |
-
-### `interviews/` - Подготовка к интервью
-| Файл | Описание | Статус |
-|------|----------|--------|
-| `checklist.md` | Консолидированный чек-лист подготовки | 🔄 Объединен |
-| `questions.md` | Приоритизированные вопросы | 🔄 Объединен |
-| `templates/` | Шаблоны отчетов и протоколов | ✅ Готов |
-
-### `project-management/` - Управление проектом
-| Файл | Описание | Статус |
-|------|----------|--------|
-| `work-plan.md` | Детальный план работы БА (40 часов) | ✅ Готов |
-| `history.md` | История проекта и текущее состояние | ✅ Готов |
-| `contracts/` | Договорная документация | ✅ Готов |
-
-
-
-### `prototypes/` - Прототипы системы
-| Файл | Описание | Статус |
-|------|----------|--------|
-| `README.md` | Обзор всех прототипов | ✅ Готов |
-| `prototype-1-ocr.md` | Извлечение данных (OCR) | ✅ Готов |
-| `prototype-2-structuring.md` | Структурирование данных | ✅ Готов |
-| `prototype-3-classification.md` | Тематическая классификация | ✅ Готов |
-
-### `/assets/` - Медиафайлы
-| Папка | Содержимое | Статус |
-|-------|------------|--------|
-| `audio/` | Аудиозаписи встреч (.m4a) | ✅ Готов |
-| `images/` | Изображения и схемы (.jpg) | ✅ Готов |
-
-### `/archive/` - Устаревшие материалы
-| Папка | Содержимое | Статус |
-|-------|------------|--------|
-| `deprecated/` | Неактуальные версии документов | 🔄 Создается |
+### Detailed Work (15 minutes)
+4. **[Business Requirements](02-requirements/business-requirements.md)** - prioritized requirements
+5. **[Technical Requirements](02-requirements/technical-requirements.md)** - technical specifications
+6. **[Metrics](02-requirements/metrics.md)** - target metrics and thresholds
+7. **[Interview Checklist](05-interviews/checklist.md)** - interview preparation
+8. **[Use Cases](02-requirements/use-cases.md)** - usage scenarios
+9. **[Prototypes](03-prototypes/README.md)** - implementation plans
 
 ---
 
-## 🎯 Ключевые особенности проекта
+## Documentation Structure
 
-### Критические ограничения
-- **Локальное развертывание** без доступа к интернету (air-gapped environment)
-- **Ролевая модель доступа** с разграничением по типам информации
-- **Продуктовая перспектива** - создание решения для рынка
+### `01-project-overview/` - Project Overview
+| File | Description | Status |
+|------|-------------|--------|
+| `README.md` | Main project documentation and navigation | Draft |
+| `project-vision.md` | Project vision and goals | Draft |
+| `project-history.md` | Project history and current state | Draft |
 
-### Целевые форматы документов
-- **PDF и изображения** - основной поток документооборота
-- **DWG-чертежи** - инженерная документация
-- **Сметы ARP/GSFX** - финансовая документация
-- **Текстовые документы** - структурирование и классификация
+### `02-requirements/` - Requirements Stack
+| File | Description | Status |
+|------|-------------|--------|
+| `business-requirements.md` | Business requirements by priorities | Draft |
+| `technical-requirements.md` | Technical requirements | Draft |
+| `use-cases.md` | Usage scenarios | Draft |
+| `document-classification.md` | Document classification requirements | Draft |
+| `metrics.md` | Success metrics and thresholds | Draft |
+| `schemas/` | JSON schemas and data examples | Draft |
 
-### Прототипы (согласно Приложению 3)
-1. **Извлечение данных** - OCR для PDF, изображений, DWG, смет
-2. **Структурирование** - группировка и организация данных
-3. **Тематическая классификация** - NLP для категоризации документов
+### `03-prototypes/` - System Prototypes
+| File | Description | Status |
+|------|-------------|--------|
+| `README.md` | All prototypes overview | Draft |
+| `prototype-1-ocr.md` | Data extraction (OCR) | Draft |
+| `prototype-2-structuring.md` | Data structuring | Draft |
+| `prototype-3-classification.md` | Thematic classification | Draft |
+
+### `04-project-management/` - Project Management
+| File | Description | Status |
+|------|-------------|--------|
+| `work-plan.md` | Detailed BA work plan (40 hours) | Draft |
+| `customer-report.md` | Customer communication reports | Draft |
+| `contracts/` | Contract documentation | Draft |
+
+### `05-interviews/` - Interview Materials
+| File | Description | Status |
+|------|-------------|--------|
+| `README.md` | Interview materials overview | Draft |
+| `checklist.md` | Consolidated preparation checklist | Draft |
+| `questions.md` | Prioritized questions | Draft |
+| `templates/` | Report templates and protocols | Draft |
+| `build/` | Generated interview materials | Draft |
+| Various reports | Interview reports and analysis | Draft |
+
+### `06-assets/` - Media Files
+| Folder | Content | Status |
+|--------|---------|--------|
+| `audio/` | Meeting recordings (.m4a) | Draft |
+| `images/` | Images and diagrams (.jpg) | Draft |
+| `input-documents/` | Sample documents for analysis | Draft |
+
+### `07-archive/` - Deprecated Materials
+| Folder | Content | Status |
+|--------|---------|--------|
+| `deprecated/` | Outdated document versions | Archive |
+| `migration-log.md` | Migration history | Archive |
+| `structure-restructure-prompt.txt` | Restructuring instructions | Archive |
 
 ---
 
-## ⚠️ Критические зависимости
+## Key Project Features
 
-### Немедленные действия
-- [ ] Создать Telegram-группу для коммуникации
-- [ ] Провести техническое интервью с заказчиком
-- [ ] Получить образцы данных для прототипов
-- [ ] Начать исследование AI-технологий
+### Critical Constraints
+- **Local deployment** without internet access (air-gapped environment)
+- **Role-based access** with information type restrictions
+- **Product perspective** - creating solution for market
 
-### Риски проекта
-1. **Недоступность стейкхолдеров** для интервью
-2. **Отсутствие качественных образцов данных**
-3. **Технические ограничения** локального развертывания
-4. **Расширение объема работ** в процессе выполнения
+### Target Document Formats
+- **PDF and images** - main document flow
+- **DWG drawings** - engineering documentation
+- **ARP/GSFX estimates** - financial documentation
+- **Text documents** - structuring and classification
 
----
-
-## 📊 Метрики проекта
-
-| Параметр | Значение |
-|----------|----------|
-| **Бюджет** | 615 000 рублей (50%/50%) |
-| **Срок** | 30 календарных дней |
-| **Команда** | 4 специалиста (132 часа) |
-| **Прототипы** | 3 (согласно Приложению 3) |
-| **Статус** | Подготовка к интервью |
+### Prototypes (per Appendix 3)
+1. **Data extraction** - OCR for PDF, images, DWG, estimates
+2. **Structuring** - data grouping and organization
+3. **Thematic classification** - NLP for document categorization
 
 ---
 
-## 🔗 Связи между документами
+## Critical Dependencies
+
+### Immediate Actions
+- [ ] Create Telegram group for communication
+- [ ] Conduct technical interview with customer
+- [ ] Obtain data samples for prototypes
+- [ ] Start AI technology research
+
+### Project Risks
+1. **Stakeholder unavailability** for interviews
+2. **Lack of quality data samples**
+3. **Technical constraints** of local deployment
+4. **Scope expansion** during execution
+
+---
+
+## Project Metrics
+
+| Parameter | Value |
+|-----------|-------|
+| **Budget** | 615,000 rubles (50%/50%) |
+| **Timeline** | 30 calendar days |
+| **Team** | 4 specialists (132 hours) |
+| **Prototypes** | 3 (per Appendix 3) |
+| **Status** | Interview preparation |
+
+---
+
+## Document Relationships
 
 ```mermaid
 graph TD
-    A[Vision Document] --> B[BRD]
-    A --> C[SRS]
+    A[Project Vision] --> B[Business Requirements]
+    A --> C[Technical Requirements]
     B --> D[Use Cases]
     C --> D
     D --> E[JSON Schemas]
@@ -137,29 +149,29 @@ graph TD
 
 ---
 
-## 📝 Контакты и коммуникация
+## Contacts and Communication
 
-### Основные контакты
-- **Денис** - технические вопросы, процессы
-- **Елена** - бизнес-вопросы, стратегия
+### Main Contacts
+- **Denis** - technical questions, processes
+- **Elena** - business questions, strategy
 
-### Формат работы
-- **Telegram-чат** + регулярные встречи
-- **Доступность**: после 18:00 по Москве
-- **Частота**: ежедневные статусы, еженедельные отчеты
-
----
-
-## 🚀 Следующие шаги
-
-1. **Изучить Vision Document** для понимания целей
-2. **Ознакомиться с Work Plan** для понимания задач
-3. **Подготовиться к интервью** используя Checklist
-4. **Получить образцы данных** от заказчика
-5. **Начать исследование технологий** для прототипов
+### Work Format
+- **Telegram chat** + regular meetings
+- **Availability**: after 18:00 Moscow time
+- **Frequency**: daily status updates, weekly reports
 
 ---
 
-**Последнее обновление**: 01.10.2025  
-**Ответственный**: Бизнес-аналитик проекта AI GOST  
-**Следующее обновление**: После проведения интервью с заказчиком
+## Next Steps
+
+1. **Study Project Vision** for goal understanding
+2. **Review Work Plan** for task understanding
+3. **Prepare for interviews** using Checklist
+4. **Obtain data samples** from customer
+5. **Start technology research** for prototypes
+
+---
+
+**Last Update**: 01.10.2025  
+**Responsible**: AI GOST Project Business Analyst  
+**Next Update**: After customer interview
