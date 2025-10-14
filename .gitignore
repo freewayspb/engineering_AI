@@ -113,3 +113,117 @@ dmypy.json
 # OCR & model data
 .tessdata/
 *.traineddata
+
+# Project-specific exclusions
+# Keep only documentation, exclude code and artifacts
+
+# Code files
+*.py
+*.js
+*.ts
+*.java
+*.cpp
+*.c
+*.h
+*.go
+*.rs
+*.php
+*.rb
+*.sh
+*.bat
+*.ps1
+
+# Data files and artifacts
+*.csv
+*.json
+*.xml
+*.yaml
+*.yml
+*.toml
+*.ini
+*.cfg
+*.conf
+
+# Model files and weights
+*.pkl
+*.joblib
+*.h5
+*.pb
+*.onnx
+*.pt
+*.pth
+*.bin
+*.safetensors
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Large documents (keep only essential ones)
+documentation/assets/input-documents/*.pdf
+documentation/assets/audio/*.m4a
+
+# Temporary and working files
+temp.txt
+*.tmp
+*.temp
+*.bak
+*.backup
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.settings/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs and debug files
+*.log
+*.out
+*.err
+debug.log
+error.log
+
+# Cache directories
+.cache/
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+
+# Virtual environments
+venv/
+env/
+.venv/
+.env/
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Docker
+.dockerignore
+
+# Git
+.git/
