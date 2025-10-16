@@ -1,4 +1,4 @@
-# AI GOST Project
+# AI GOST — Проектная документация
 
 **Проект**: Локальная система ИИ для автоматизированной обработки документов  
 **Заказчик**: ООО «ТДК-АЙТИ»  
@@ -7,12 +7,15 @@
 
 ---
 
-## Быстрый старт
+## Как читать структуру
 
-1. **[Документация](documentation/README.md)** - полное описание проекта
-2. **[Требования](documentation/requirements/)** - BRD, SRS, Use Cases
-3. **[Прототипы](documentation/prototypes/)** - планы реализации
-4. **[Управление](documentation/project-management/)** - планы и история
+1. **Обзор**: `documentation/01-project-overview/` — видение и история (`project-vision.md`, `project-history.md`).
+2. **Требования**: `documentation/02-requirements/` — BRD/SRS/UC, технические требования и схемы.
+3. **Прототипы**: `documentation/03-prototypes/` — P1/P2/P3 с Demo Script, Acceptance, Sample data.
+4. **Управление проектом**: `documentation/04-project-management/` — план работ, отчёты, договоры.
+5. **Интервью**: `documentation/05-interviews/` — отчёты/протоколы/вопросники/транскрипты.
+6. **Активы**: `documentation/06-assets/` — входные документы, изображения, аудио (локально).
+7. **Архив**: `documentation/07-archive/deprecated/` — устаревшие материалы.
 
 ---
 
@@ -26,4 +29,4 @@
 
 ---
 
-**Обновлено**: 01.10.2025 (редактура документации)
+**Обновлено**: 15.10.2025 (нормализация структуры, русификация README, ссылки относительные)

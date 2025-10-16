@@ -22,3 +22,4 @@ Project management materials including work plans, customer reports, and contrac
 2. Check [customer-report.md](customer-report.md) for client communication
 3. Review [contracts/](contracts/) for legal documentation
 
+

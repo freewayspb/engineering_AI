@@ -1,1 +1,10 @@
-переведи все на русский, в этом проекте документация будет на русском 
+---
+alwaysApply: true
+---
+
+# Language Rules (BA_AI_GOST)
+
+- Chat with the client and stakeholders in Russian.
+- Keep all repository files (documentation and code comments) in Russian for this project.
+- Do not mix languages within a single paragraph.
+- When referencing files, directories, functions, or classes, use backticks.

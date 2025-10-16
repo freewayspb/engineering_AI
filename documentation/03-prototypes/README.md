@@ -1,25 +1,30 @@
-# 03 - Prototypes
+# 03 — Прототипы
 
-This section contains prototype documentation and implementation plans.
+Здесь размещены описания прототипов и планы их реализации.
 
-## Purpose
-Documentation for AI system prototypes including OCR, structuring, and classification components.
+## Назначение
+Документация прототипов системы: OCR/извлечение, структурирование, классификация.
 
-## Files
+## Файлы
 
-| File | Description | Status |
-|------|-------------|--------|
-| `README.md` | Prototypes overview and implementation plan | Draft |
-| `prototype-1-ocr.md` | OCR data extraction prototype | Draft |
-| `prototype-2-structuring.md` | Data structuring prototype | Draft |
-| `prototype-3-classification.md` | Document classification prototype | Draft |
+| Файл | Описание | Статус |
+|------|----------|--------|
+| `README.md` | Обзор прототипов и план запуска | Черновик |
+| `prototype-1-ocr.md` | Прототип P1: OCR и извлечение данных | Черновик |
+| `prototype-2-structuring.md` | Прототип P2: Структурирование и отчёты | Черновик |
+| `prototype-3-classification.md` | Прототип P3: Классификация и поиск аналогов | Черновик |
 
-## Navigation
-- **Parent**: [Documentation Root](../README.md)
-- **Related**: [02-Requirements](../02-requirements/README.md) | [04-Project Management](../04-project-management/README.md)
+## Навигация
+- Родитель: [Корень документации](../README.md)
+- Связанные: [02 — Требования](../02-requirements/README.md) | [04 — Управление проектом](../04-project-management/README.md)
 
-## Quick Start
-1. Read [README.md](README.md) for prototypes overview
-2. Review [prototype-1-ocr.md](prototype-1-ocr.md) for OCR implementation
-3. Study [prototype-2-structuring.md](prototype-2-structuring.md) for data structuring
-4. Check [prototype-3-classification.md](prototype-3-classification.md) for classification
+## Как читать и проверять
+1. Начните с этого `README.md` для обзора.
+2. Перейдите в `prototype-1-ocr.md` для сценариев извлечения (ссылки на UC).
+3. Откройте `prototype-2-structuring.md` для нормализации и отчётов (шаблоны ПТО/Сметного).
+4. Просмотрите `prototype-3-classification.md` для тематической классификации и поиска аналогов.
+
+Каждый прототип содержит:
+- Demo Script (без метрик)
+- Acceptance Checklist (без метрик)
+- Sample data pack с относительными путями к `documentation/06-assets/input-documents/`

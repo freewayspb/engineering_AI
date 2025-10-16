@@ -22,3 +22,4 @@ Storage for audio recordings, images, and input documents used in the project.
 2. Review [images/](images/) for visual materials
 3. Study [input-documents/](input-documents/) for sample data
 
+

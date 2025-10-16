@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<Document ProgramVersion="14.2.5.49208" Generator="GrandSmeta" DocumentType="{2B0470FD-477C-4359-9F34-EEBE36B7D340}">
+  <Properties LocNum="04-01-01" RegNum="7266/15ГС-ГП" Constr="«Техническое перевооружение устройств электроснабжения нетяговых потребителей на участке станция Чухломинская - станция Лянгасово» Горьковской железной дороги" Description="Генеральный план"/>
+  <GsDocSignatures>
+    <Item Caption="Основание" ID="100" Value="7266/15ГС-ГП"/>
+    <Item Caption="Утверждаю" ID="200"/>
+    <Item Caption="Согласовано" ID="210"/>
+    <Item Caption="Составил" ID="300" Value="Инженер-сметчик В.А. Алехин"/>
+    <Item Caption="Проверил" ID="310" Value="Главный инженер проекта  А.Г. Макарейкин"/>
+  </GsDocSignatures>
+  <RegionalK Options="Percent InPos Base Curr"/>
+  <TerZoneK Caption="Территориальная поправка к базе 2001г" Options="Base PzAll EmAll"/>
+  <WinterCatalog WinterMode="None" WinterLinkMode="Table">
+    <CommonWinterK/>
+  </WinterCatalog>
+  <RegionInfo RegionName="Отраслевая сметно-нормативная база ОАО «РЖД» (ОСНБЖ-2001) с Доп.№1-4" RegionID="2044" Zone84Name="Базовый территориальный район" Zone84ID="1" Zone01Name="III: г. Москва, Московская область" Zone01ID="1"/>
+  <FRSN_Info BaseType="OSN" BaseName="Изменения и дополнения в отраслевую сметно- нормативную базу ОАО «РЖД» ОСНБЖ-2001 (И3, И4), утвержденную распоряжением ОАО «РЖД» от 31 января 2011 г. № 178р" RegNumber="15" RegDate="06.05.2015">
+    <Overhd_Info BaseType="GSN" BaseName="Методика по разработке и применению нормативов накладных расходов при определении сметной стоимости строительства, реконструкции, капитального ремонта, сноса объектов капитального строительства. Утверждена приказом Минстроя России от 21 декабря 2020 г. № 812/пр. Внесены изменения приказом Минстроя России от 02.09.2021 г. № 636/пр. Внесены изменения приказом Минстроя России от 26.07.2022 г. № 611/пр." RegNumber="377" RegDate="16.04.2021" OrderDetails="Приказы Минстроя России № 812/пр от 21.12.2020, № 636/пр от 02.09.2021, № 611/пр от 26.07.2022"/>
+    <Profit_Info BaseType="GSN" BaseName="Методика по разработке и применению нормативов сметной прибыли при определении сметной стоимости строительства, реконструкции, капитального ремонта, сноса объектов капитального строительства. Утверждена приказом Минстроя России от 11 декабря 2020 г. № 774/пр. Внесены изменения приказом Минстроя России от 22.04.2022 г. № 317/пр." RegNumber="376" RegDate="16.04.2021" OrderDetails="Приказы Минстроя России № 774/пр от 11.12.2020, № 317/пр от 22.04.2022"/>
+  </FRSN_Info>
+  <Parameters Options="RoundPos ObsoleteRound" BasePrices="2001" BaseCalcVrs="Vr2001" TzDigits="2" BlockRoundMode="Summ" MultKPosCalcMode="UseTotalMult" TempZone="1" TsnTempZone="1" MatDigits="4" MatRoundMode="SignDigitsPreserveInt" PosKDigits="2" FirstItogItem="K" ItogExpandTo="Root">
+    <CommonNK/>
+    <CommonPK/>
+    <Numbering Mode="Sequential" Options="Auto"/>
+  </Parameters>
+  <Indexes IndexesMode="None" IndexesLinkMode="Default"/>
+  <AddZatrats>
+    <AddZatrGlava Glava="8"/>
+    <AddZatrGlava Glava="9"/>
+    <AddZatrGlava Glava="10"/>
+    <AddZatrGlava Glava="11"/>
+    <AddZatrGlava Glava="12"/>
+    <AddZatrGlava Glava="13"/>
+    <AddZatrGlava Glava="14"/>
+    <AddZatrGlava Glava="15"/>
+  </AddZatrats>
+  <OsInfo OSChapter="1" LinkType="LB">
+    <CCChapter Cons="2" Rec="2" Road="2"/>
+  </OsInfo>
+  <CennikAutoLoad Enabled="False" MatchFields="Code" Groups="Tzr Tzm Mch Mat" SubGroups="Standart Positions" Options="IgnoreCodePrefix" PriceTypes="PriceBase PriceCurr">
+    <DocLink/>
+  </CennikAutoLoad>
+  <VidRab_Catalog>
+    <Vids_Rab Type="Виды работ 2001г" CatFile="ВР Методика 2020 и 636 и 317 и 611">
+      <VidRab_Group Caption="Общестроительные работы" ID="0">
+        <Vid_Rab Caption="Земляные работы, выполняемые механизированным способом" ID="10001" Category="Construction" NrCode="Приказ № 812/пр от 21.12.2020 Прил. п.1.1" SpCode="Приказ № 774/пр от 11.12.2020 Прил. п.1.1" Nacl="92" Plan="46" NaclCurr="92" PlanCurr="46" NaclMask="ФОТ" PlanMask="ФОТ"/>
+        <Vid_Rab Caption="Земляные работы, выполняемые ручным способом" ID="10002" Category="Construction" NrCode="Приказ № 812/пр от 21.12.2020 Прил. п.1.2" SpCode="Приказ № 774/пр от 11.12.2020 Прил. п.1.2" Nacl="89" Plan="40" NaclCurr="89" PlanCurr="40" NaclMask="ФОТ" PlanMask="ФОТ"/>
+        <Vid_Rab Caption="Земляные работы, выполняемые по другим видам работ (подготовительным, сопутствующим, укрепительным)" ID="10004" Category="Construction" NrCode="Приказ № 812/пр от 21.12.2020 Прил. п.1.4" SpCode="Приказ № 774/пр от 11.12.2020 Прил. п.1.4" Nacl="89" Plan="41" NaclCurr="89" PlanCurr="41" NaclMask="ФОТ" PlanMask="ФОТ"/>
+        <Vid_Rab Caption="Автомобильные дороги" ID="10031" Category="Construction" NrCode="Приказ № 812/пр от 21.12.2020 Прил. п.21 (в ред. пр. № 636/пр от 02.09.2021)" SpCode="Приказ № 774/пр от 11.12.2020 Прил. п.21 (в ред. пр. № 317/пр от 22.04.2022)" Nacl="147" Plan="134" NaclCurr="147" PlanCurr="134" NaclMask="ФОТ" PlanMask="ФОТ"/>
+        <Vid_Rab Caption="Материалы" ID="2945" NaclMask="ФОТ" PlanMask="ФОТ"/>
+        <Vid_Rab Caption="Бетонные и железобетонные сборные конструкции и работы в строительстве" ID="10013" Category="Construction" NrCode="Приказ № 812/пр от 21.12.2020 Прил. п.7" SpCode="Приказ № 774/пр от 11.12.2020 Прил. п.7" Nacl="110" Plan="73" NaclCurr="110" PlanCurr="73" NaclMask="ФОТ" PlanMask="ФОТ"/>
+        <Vid_Rab Caption="Озеленение. Защитные лесонасаждения" ID="10054" Category="Construction" NrCode="Приказ № 812/пр от 21.12.2020 Прил. п.41" SpCode="Приказ № 774/пр от 11.12.2020 Прил. п.41" Nacl="103" Plan="72" NaclCurr="103" PlanCurr="72" NaclMask="ФОТ" PlanMask="ФОТ"/>
+        <Vid_Rab Caption="Скважины" ID="10007" Category="Construction" NrCode="Приказ № 812/пр от 21.12.2020 Прил. п.4" SpCode="Приказ № 774/пр от 11.12.2020 Прил. п.4" Nacl="106" Plan="45" NaclCurr="106" PlanCurr="45" NaclMask="ФОТ" PlanMask="ФОТ"/>
+        <Vid_Rab Caption="Бетонные и железобетонные монолитные конструкции и работы в строительстве" ID="10011" Category="Construction" NrCode="Приказ № 812/пр от 21.12.2020 Прил. п.6" SpCode="Приказ № 774/пр от 11.12.2020 Прил. п.6" Nacl="102" Plan="58" NaclCurr="102" PlanCurr="58" NaclMask="ФОТ" PlanMask="ФОТ"/>
+      </VidRab_Group>
+      <VidRab_Group Caption="Монтаж металлоконструкций" ID="1">
+        <Vid_Rab Caption="Строительные металлические конструкции" ID="10016" Category="Construction" NrCode="Приказ № 812/пр от 21.12.2020 Прил. п.9" SpCode="Приказ № 774/пр от 11.12.2020 Прил. п.9" Nacl="93" Plan="62" NaclCurr="93" PlanCurr="62" NaclMask="ФОТ" PlanMask="ФОТ"/>
+      </VidRab_Group>
+      <VidRab_Group Caption="Ремонтно-строительные работы" ID="5"/>
+      <VidRab_Group Caption="Перевозка по ФЕР" ID="13"/>
+      <VidRab_Group Caption="Перевозка грузов" ID="1013">
+        <Vid_Rab Caption="Перевозка грузов (грунт, мусор и подобное)" ID="11320" Category="ConstrTransportation" ResGroup="Transp" NaclMask="" PlanMask=""/>
+        <Vid_Rab Caption="Погрузо-разгрузочные работы" ID="10591" Category="Construction" ResGroup="Load" NaclMask="ФОТ" PlanMask="ФОТ"/>
+      </VidRab_Group>
+      <VidRab_Group Caption="Монтажные работы" ID="10003">
+        <Vid_Rab Caption="Электротехнические установки на других объектах" ID="10060" OsColumn="М" Category="Mounting" NrCode="Приказ № 812/пр от 21.12.2020 Прил. п.49.3" SpCode="Приказ № 774/пр от 11.12.2020 Прил. п.49.3" Nacl="97" Plan="51" NaclCurr="97" PlanCurr="51" NaclMask="ФОТ" PlanMask="ФОТ"/>
+      </VidRab_Group>
+    </Vids_Rab>
+    <Vids_Rab Type="Виды работ 1984г"/>
+  </VidRab_Catalog>
+  <Chapters>
+    <Chapter Caption="Планировка территории" SysID="30">
+      <Position Caption="Валка деревьев мягких пород с корня, диаметр стволов: до 20 см" Identifier="Ф1" Number="1" Code="ОЕРЖ01-02-099-02" Units="100 деревьев" SysID="67" PriceLevel="2001" DBComment="Приказ Минстроя РФ №326/пр от 25.04.2015г." Quantity="35 / 100" PzSync="Yes" Vr2001="10004">
+        <Quantity Fx="=35" KUnit="100" Result="0,35"/>
+        <PriceBase PZ="72,34" OZ="61,29" EM="11,05"/>
+        <Resources>
+          <Tzr Caption="Рабочий среднего разряда 3,8" Code="1-3-8" Units="чел.-ч" Quantity="6,52" WorkClass="3,8">
+            <PriceBase Value="9,4"/>
+          </Tzr>
+          <Mch Caption="Пила: с карбюраторным двигателем" Code="331601" Units="маш.час" Quantity="2,17">
+            <PriceBase Value="5,09"/>
+          </Mch>
+        </Resources>
+        <WorksList>
+          <Work Caption="01. Уборка валежника."/>
+          <Work Caption="02. Вырубка кустарника и подроста мешающего валке."/>
+          <Work Caption="03. Уборка сухостойных и зависших деревьев."/>
+          <Work Caption="04. Валка деревьев."/>
+          <Work Caption="05. Расчистка лесосеки от порубочных остатков и сжигание их."/>
+        </WorksList>
+      </Position>
+      <Position Caption="Валка деревьев мягких пород с корня, диаметр стволов: до 24 см" Identifier="Ф3" Number="2" Code="ОЕРЖ01-02-099-03" Units="100 деревьев" SysID="74" PriceLevel="2001" DBComment="Приказ Минстроя РФ №326/пр от 25.04.2015г." Quantity="48 / 100" PzSync="Yes" Vr2001="10004">
+        <Quantity Fx="=48" KUnit="100" Result="0,48"/>
+        <PriceBase PZ="93,87" OZ="79,52" EM="14,35"/>
+        <Resources>
+          <Tzr Caption="Рабочий среднего разряда 3,8" Code="1-3-8" Units="чел.-ч" Quantity="8,46" WorkClass="3,8">
+            <PriceBase Value="9,4"/>
+          </Tzr>
+          <Mch Caption="Пила: с карбюраторным двигателем" Code="331601" Units="маш.час" Quantity="2,82">
+            <PriceBase Value="5,09"/>
+          </Mch>
+        </Resources>
+        <WorksList>
+          <Work Caption="01. Уборка валежника."/>
+          <Work Caption="02. Вырубка кустарника и подроста мешающего валке."/>
+          <Work Caption="03. Уборка сухостойных и зависших деревьев."/>
+          <Work Caption="04. Валка деревьев."/>
+          <Work Caption="05. Расчистка лесосеки от порубочных остатков и сжигание их."/>
+        </WorksList>
+      </Position>
+      <Position Caption="Разделка древесины мягких пород, полученной от валки леса, диаметр стволов: до 20 см" Number="3" Code="ОЕРЖ01-02-101-03" Units="100 деревьев" SysID="68" PriceLevel="2001" DBComment="Приказ Минстроя РФ №326/пр от 25.04.2015г." Quantity="Ф1" DBFlags="TechK" PzSync="Yes" Vr2001="10004">
+        <Quantity Fx="Ф1" KUnit="100" Result="0,35"/>
+        <PriceBase PZ="217,66" OZ="181,01" EM="36,65"/>
+        <Resources>
+          <Tzr Caption="Рабочий среднего разряда 2,8" Code="1-2-8" Units="чел.-ч" Quantity="21,6" WorkClass="2,8">
+            <PriceBase Value="8,38"/>
+          </Tzr>
+          <Mch Caption="Пила: с карбюраторным двигателем" Code="331601" Units="маш.час" Quantity="7,2">
+            <PriceBase Value="5,09"/>
+          </Mch>
+        </Resources>
+        <Koefficients>
+          <K Caption="Разделка древесины без заготовки дров" Code="Прил.1.12 п.3.213" Options="Base Curr EmAll EmQty OzpTz ZpmTz" Value_OZ="0,8" Value_EM="0,7" Level="1"/>
+        </Koefficients>
+        <WorksList>
+          <Work Caption="01. Обрубка сучьев."/>
+          <Work Caption="02. Раскряжевка хлыстов на сортаменты."/>
+          <Work Caption="03. Окорка бревен."/>
+          <Work Caption="04. Укладка бревен в штабеля."/>
+          <Work Caption="05. Разделка коротья на дрова."/>
+          <Work Caption="06. Относка и укладка дров."/>
+          <Work Caption="07. Очистка мест разделки от порубочных остатков и сжигание их."/>
+          <Work Caption="08. Устройство минерализованных полос."/>
+        </WorksList>
+      </Position>
+      <Position Caption="Разделка древесины мягких пород, полученной от валки леса, диаметр стволов: до 24 см" Number="4" Code="ОЕРЖ01-02-101-04" Units="100 деревьев" SysID="75" PriceLevel="2001" DBComment="Приказ Минстроя РФ №326/пр от 25.04.2015г." Quantity="Ф3" DBFlags="TechK" PzSync="Yes" Vr2001="10004">
+        <Quantity Fx="Ф3" KUnit="100" Result="0,48"/>
+        <PriceBase PZ="290,2" OZ="241,34" EM="48,86"/>
+        <Resources>
+          <Tzr Caption="Рабочий среднего разряда 2,8" Code="1-2-8" Units="чел.-ч" Quantity="28,8" WorkClass="2,8">
+            <PriceBase Value="8,38"/>
+          </Tzr>
+          <Mch Caption="Пила: с карбюраторным двигателем" Code="331601" Units="маш.час" Quantity="9,6">
+            <PriceBase Value="5,09"/>
+          </Mch>
+        </Resources>
+        <Koefficients>
+          <K Caption="Разделка древесины без заготовки дров" Code="Прил.1.12 п.3.213" Options="Base Curr EmAll EmQty OzpTz ZpmTz" Value_OZ="0,8" Value_EM="0,7" Level="1"/>
+        </Koefficients>
+        <WorksList>
+          <Work Caption="01. Обрубка сучьев."/>
+          <Work Caption="02. Раскряжевка хлыстов на сортаменты."/>
+          <Work Caption="03. Окорка бревен."/>
+          <Work Caption="04. Укладка бревен в штабеля."/>
+          <Work Caption="05. Разделка коротья на дрова."/>
+          <Work Caption="06. Относка и укладка дров."/>
+          <Work Caption="07. Очистка мест разделки от порубочных остатков и сжигание их."/>
+          <Work Caption="08. Устройство минерализованных полос."/>
+        </WorksList>
+      </Position>
+      <Position Caption="Корчевка пней в грунтах естественного залегания корчевателями-собирателями на тракторе мощностью 79 кВт (108 л.с.) с перемещением пней до 5 м, диаметр пней: до 24 см" Identifier="Ф5" Number="5" Code="ОЕРЖ01-02-105-01" Units="100 пней" SysID="69" PriceLevel="2001" DBComment="Приказ Минстроя РФ №326/пр от 25.04.2015г." Quantity="Ф1+Ф3" PzSync="Yes" Vr2001="10004">
+        <Quantity Fx="Ф1+Ф3" KUnit="100" Result="0,83"/>
+        <PriceBase PZ="216,94" EM="216,94" ZM="35,14"/>
+        <Resources>
+          <Tzm Caption="Затраты труда машинистов" Code="2" Units="чел.-ч" Quantity="2,44"/>
+          <Mch Caption="Корчеватели-собиратели с трактором: 79 кВт (108 л.с.)" Code="090501" Units="маш.час" Quantity="2,44">
+            <PriceBase Value="88,91" ZM="14,4"/>
+          </Mch>
+        </Resources>
+        <WorksList>
+          <Work Caption="01. Корчевка пней с перемещением на заданное расстояние."/>
+        </WorksList>
+      </Position>
+      <Position Caption="Обивка земли с выкорчеванных пней корчевателями-собирателями на тракторе мощностью 79 кВт (108 л.с.), диаметр пней: до 24 см" Identifier="Ф4" Number="6" Code="ОЕРЖ01-02-108-01" Units="100 пней" SysID="70" PriceLevel="2001" DBComment="Приказ Минстроя РФ №326/пр от 25.04.2015г." Quantity="Ф1+Ф3" PzSync="Yes" Vr2001="10004">
+        <Quantity Fx="Ф1+Ф3" KUnit="100" Result="0,83"/>
+        <PriceBase PZ="67,57" EM="67,57" ZM="10,94"/>
+        <Resources>
+          <Tzm Caption="Затраты труда машинистов" Code="2" Units="чел.-ч" Quantity="0,76"/>
+          <Mch Caption="Корчеватели-собиратели с трактором: 79 кВт (108 л.с.)" Code="090501" Units="маш.час" Quantity="0,76">
+            <PriceBase Value="88,91" ZM="14,4"/>
+          </Mch>
+        </Resources>
+        <WorksList>
+          <Work Caption="01. Обивка земли с выкорчеванных пней."/>
+        </WorksList>
+      </Position>
+      <Position Caption="Погрузка при автомобильных перевозках: Погрузка мусора строительного ( Деревья высотой 20 м диаметром ствола 20 мм и 24 мм в количестве 35 и 48 штук, пни в количестве 35 и 48 шт.)" Identifier="Ф2" Number="7" Code="ОССПЖ-01-01-01-054" Units="1 т груза" SysID="80" PriceLevel="2001" DBComment="Приказ Минстроя РФ №326/пр от 25.04.2015г." Quantity="(0,219+0,434+0,005+0,01)*0,5" PzSync="Yes" Vr2001="11320">
+        <Quantity Fx="=(0,219+0,434+0,005+0,01)*0,5" Result="0,334"/>
+        <PriceBase PZ="2,83" EM="2,83"/>
+      </Position>
+      <Position Caption="Перевозка массовых навалочных грузов автомобилями-самосвалами, работающими вне карьеров на расстояние: до 30 км (I класс груза)" Number="8" Code="ОССПЖ-03-21-01-030" Units="1 т груза" SysID="72" PriceLevel="2001" DBComment="с Доп.1-4" Quantity="Ф2" DBFlags="TechK" PzSync="Yes" Vr2001="11320">
+        <Quantity Fx="=Ф2" Result="0,334"/>
+        <PriceBase PZ="19,29" EM="19,29"/>
+      </Position>
+      <Position Caption="Перевозка массовых навалочных грузов автомобилями-самосвалами, работающими вне карьеров на расстояние: свыше 30 км за каждый 1 км добавлять (I класс груза)" Number="9" Code="ОССПЖ-03-21-01-031" Units="1 т груза" SysID="76" PriceLevel="2001" DBComment="с Доп.1-4" Quantity="Ф2" DBFlags="TechK" PzSync="Yes" Vr2001="11320">
+        <Quantity Fx="=Ф2" Result="0,334"/>
+        <PriceBase PZ="0,37" EM="0,37"/>
+        <Koefficients>
+          <K Caption="Вывоз древесных отходов  104 км" Options="Base Curr PzAll EmAll MatQty EmQty OzpTz ZpmTz" Value_PZ="74" Level="1"/>
+        </Koefficients>
+      </Position>
+      <Position Caption="Расчистка площадей от кустарника и мелколесья вручную: при средней поросли" Number="10" Code="ОЕРЖ01-02-119-02" Units="100 м2" SysID="77" PriceLevel="2001" DBComment="Приказ Минстроя РФ №326/пр от 25.04.2015г." Quantity="523 / 100" PzSync="Yes" Vr2001="10004">
+        <Quantity Fx="=523" KUnit="100" Result="5,23"/>
+        <PriceBase PZ="37,79" OZ="37,79"/>
+        <Resources>
+          <Tzr Caption="Рабочий среднего разряда 3" Code="1-3-0" Units="чел.-ч" Quantity="4,43" WorkClass="3">
+            <PriceBase Value="8,53"/>
+          </Tzr>
+        </Resources>
+        <WorksList>
+          <Work Caption="01. Рубка леса до 110 мм и кустарника топором."/>
+          <Work Caption="02. Рубка сучьев."/>
+          <Work Caption="03. Укладка деловой древесины в штабель."/>
+          <Work Caption="04. Укладка дров кустарника и веток в кучи."/>
+          <Work Caption="05. Переноска материалов до 10 м."/>
+        </WorksList>
+      </Position>
+      <Position Caption="Дробление древесно-кустарниковой растительности в щепу&#xD;&#xA;(га)" Number="11" Code="Калькуляция номер 1-2023" Units="га" SysID="78" PriceLevel="2001" Quantity="1" PzSync="Yes" Vr2001="10004">
+        <Quantity Fx="1" Result="1"/>
+        <PriceBase PZ="578" MT="578"/>
+      </Position>
+      <Position Caption="Планировка площадей бульдозерами мощностью: 59 кВт (80л.с.)" Number="12" Code="ОЕРЖ01-01-036-01" Units="1000 м2 спланированной поверхности за 1 проход бульдозера" SysID="73" PriceLevel="2001" DBComment="Приказ Минстроя РФ №326/пр от 25.04.2015г." Quantity="1814 / 1000" DBFlags="TechK" PzSync="Yes" Vr2001="10001">
+        <Quantity Fx="=1814" KUnit="1000" Result="1,814"/>
+        <PriceBase PZ="22,6" EM="22,6" ZM="4,41"/>
+        <Resources>
+          <Tzm Caption="Затраты труда машинистов" Code="2" Units="чел.-ч" Quantity="0,38"/>
+          <Mch Caption="Бульдозеры при работе на других видах строительства: 59 кВт (80 л.с.)" Code="070148" Units="маш.час" Quantity="0,38">
+            <PriceBase Value="59,47" ZM="11,6"/>
+          </Mch>
+        </Resources>
+        <WorksList>
+          <Work Caption="01. Предварительная (грубая) планировка площадей со срезкой неровностей грунта и засыпка впадин."/>
+        </WorksList>
+      </Position>
+      <Position Caption="Разработка грунта с перемещением до 10 м бульдозерами мощностью: 59 кВт (80 л.с.), группа грунтов 2(срезка непригодного грунта с перемешение в отвал)" Number="13" Code="ОЕРЖ01-01-030-02" Units="1000 м3 грунта" SysID="51" PriceLevel="2001" DBComment="Приказ Минстроя РФ №326/пр от 25.04.2015г." Quantity="56 / 1000" DBFlags="TechK" PzSync="Yes" Vr2001="10001">
+        <Quantity Fx="=56" KUnit="1000" Result="0,056"/>
+        <PriceBase PZ="752,3" EM="752,3" ZM="146,74"/>
+        <Resources>
+          <Tzm Caption="Затраты труда машинистов" Code="2" Units="чел.-ч" Quantity="12,65"/>
+          <Mch Caption="Бульдозеры при работе на других видах строительства: 59 кВт (80 л.с.)" Code="070148" Units="маш.час" Quantity="12,65">
+            <PriceBase Value="59,47" ZM="11,6"/>
+          </Mch>
+        </Resources>
+        <WorksList>
+          <Work Caption="01. Разработка грунта с перемещением."/>
+        </WorksList>
+      </Position>
+      <Position Caption="Планировка площадей бульдозерами мощностью: 59 кВт (80л.с.)(механизированным способом (разравнивание песка бульдозером)" Number="14" Code="ОЕРЖ01-01-036-01" Units="1000 м2 спланированной поверхности за 1 проход бульдозера" SysID="81" PriceLevel="2001" DBComment="Приказ Минстроя РФ №326/пр от 25.04.2015г." Quantity="42 / 1000" DBFlags="TechK" PzSync="Yes" Vr2001="10001">
+        <Quantity Fx="=42" KUnit="1000" Result="0,042"/>
+        <PriceBase PZ="22,6" EM="22,6" ZM="4,41"/>
+        <Resources>
+          <Tzm Caption="Затраты труда машинистов" Code="2" Units="чел.-ч" Quantity="0,38"/>
+          <Mch Caption="Бульдозеры при работе на других видах строительства: 59 кВт (80 л.с.)" Code="070148" Units="маш.час" Quantity="0,38">
+            <PriceBase Value="59,47" ZM="11,6"/>
+          </Mch>
+        </Resources>
+        <WorksList>
+          <Work Caption="01. Предварительная (грубая) планировка площадей со срезкой неровностей грунта и засыпка впадин."/>
+        </WorksList>
+      </Position>
+      <Position Caption="Песок природный для строительных: работ средний" Number="15" Code="ОССЦЖ-408-0122" Units="м3" SysID="53" PriceLevel="2001" DBComment="Приказ Минстроя РФ №326/пр от 25.04.2015г." Quantity="6" PzSync="Yes" Vr2001="10001" Mass="1500">
+        <Quantity Fx="6" Result="6"/>
+        <PriceBase PZ="55,26" MT="55,26"/>
+      </Position>
+    </Chapter>
+  </Chapters>
+  <ReportOptions Options="Grouping SeparateZakPodr" Kk="1" RangingGroups="Mch Mat">
+    <RangingRates Mch="20" Mat="20"/>
+  </ReportOptions>
+</Document>

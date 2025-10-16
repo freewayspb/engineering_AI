@@ -22,3 +22,4 @@ Storage for outdated documents, deprecated versions, and migration documentation
 2. Review [migration-log.md](migration-log.md) for change history
 3. Reference [structure-restructure-prompt.txt](structure-restructure-prompt.txt) for restructuring details
 
+

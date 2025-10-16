@@ -12,7 +12,7 @@
     "projectName": { "type": "string" },
     "detectedType": { 
       "type": "string", 
-      "enum": ["pdf", "image", "dwg", "smeta_arp", "smeta_gsfx", "normative", "unknown"] 
+      "enum": ["mc_pdf", "scan_pdf", "image", "dwg", "smeta_arp", "smeta_gsfx", "smeta_xml", "smeta_xls", "docx_normative", "unknown"] 
     },
     "sourceFileName": { "type": "string" },
     "sourceMime": { "type": "string" },
@@ -23,7 +23,21 @@
       "enum": ["pending", "processing", "learned", "failed"] 
     },
     "ingestedAt": { "type": "string", "format": "date-time" },
-    "learnedAt": { "type": "string", "format": "date-time" }
+    "learnedAt": { "type": "string", "format": "date-time" },
+    "titleBlock": {
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "cipher": { "type": "string" },
+        "sheetNumber": { "type": "string" },
+        "documentName": { "type": "string" },
+        "sheetFormat": { "type": "string" },
+        "designStage": { "type": "string" },
+        "organization": { "type": "string" },
+        "documentDate": { "type": "string", "format": "date" },
+        "revisionNumber": { "type": "string" }
+      }
+    }
   },
   "required": ["documentId", "projectId", "detectedType", "sourceFileName", "ingestedAt"]
 }
@@ -172,12 +186,12 @@
         "properties": {
           "code": { "type": "string" },
           "name": { "type": "string" },
-          "unit": { "type": "string" },
+          "unit": { "type": "string", "enum": ["pcs", "kg", "m", "m2", "m3", "hour", "other"] },
           "quantity": { "type": "number" },
           "price": { "type": "number" },
           "amount": { "type": "number" },
           "section": { "type": "string" },
-          "gostReference": { "type": "string" }
+          "gostReference": { "type": "string", "description": "Format: GOST <number>-<year>" }
         },
         "required": ["name", "quantity", "price", "amount"]
       }
@@ -190,6 +204,16 @@
         "total": { "type": "number" }
       },
       "required": ["total"]
+    },
+    "rdCipher": { "type": "string" },
+    "hasFormulas": { "type": "boolean" },
+    "validation": {
+      "type": "object",
+      "properties": {
+        "totalsDelta": { "type": "number" },
+        "unitsCheck": { "type": "boolean" },
+        "missingFields": { "type": "array", "items": { "type": "string" } }
+      }
     },
     "excelExport": {
       "type": "object",
@@ -219,11 +243,13 @@
     "documentNumber": { "type": "string" },
     "title": { "type": "string" },
     "year": { "type": "integer" },
+    "approvalDate": { "type": "string", "format": "date" },
     "status": { 
       "type": "string", 
       "enum": ["active", "replaced", "cancelled"] 
     },
     "content": { "type": "string" },
+    "excerpts": { "type": "array", "items": { "type": "string" } },
     "keywords": { "type": "array", "items": { "type": "string" } },
     "learningStatus": { 
       "type": "string", 
@@ -232,6 +258,52 @@
     "ingestedAt": { "type": "string", "format": "date-time" }
   },
   "required": ["normativeId", "documentType", "documentNumber", "title", "status"]
+}
+```
+## 10. Title Block Extraction Log (audit)
+```json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "TitleBlockExtractionLog",
+  "type": "object",
+  "properties": {
+    "documentId": { "type": "string" },
+    "fields": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "value": { "type": "string" },
+          "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+        },
+        "required": ["name", "value"]
+      }
+    },
+    "processedAt": { "type": "string", "format": "date-time" }
+  },
+  "required": ["documentId", "fields", "processedAt"]
+}
+```
+
+## 11. Processing Error/Trace Log
+```json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ProcessingErrorLog",
+  "type": "object",
+  "properties": {
+    "timestamp": { "type": "string", "format": "date-time" },
+    "level": { "type": "string", "enum": ["INFO", "WARN", "ERROR"] },
+    "code": { "type": "string" },
+    "message": { "type": "string" },
+    "documentId": { "type": "string" },
+    "inputPath": { "type": "string" },
+    "outputPath": { "type": "string" },
+    "stage": { "type": "string" },
+    "details": { "type": "object" }
+  },
+  "required": ["timestamp", "level", "message"]
 }
 ```
 
@@ -310,4 +382,8 @@
 ---
 
 **Примечание**: Схемы адаптированы под новую концепцию интеллектуальной системы обучения с проектно-ориентированной работой и текстовыми запросами. Все схемы включают поля для проектной привязки и статуса обучения системы.
+
+Дополнительно: даты и даты‑времена должны нормализоваться к формату ISO 8601.
+ - Для дат используем формат YYYY‑MM‑DD (`format: date`).
+ - Для даты‑времени используем формат `YYYY‑MM‑DDThh:mm:ssZ` или с часовым поясом (`format: date-time`).
 

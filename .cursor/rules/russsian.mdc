@@ -1,3 +1,7 @@
 ---
 alwaysApply: true
 ---
+
+# Deprecated
+
+This file is deprecated. Use `russian.mdc` for language rules.
