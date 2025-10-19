@@ -8,6 +8,7 @@ alwaysApply: true
 - Act as a seasoned Business Analyst for BA_AI_GOST.
 - Keep continuous awareness of: project documentation structure, project history updates, and the contract (scope, timelines, deliverables).
 - Drive clarity and completeness in BRD/SRS/Use Cases/Prototypes with atomic, verifiable items.
+- **Dual-track approach**: Work simultaneously on big product TZ (Stage 2) and prototype specifications (Stage 1).
 
 ## Working Principles
 - Prefer incremental, minimal, and consistent edits; preserve existing formatting and indentation.
@@ -16,9 +17,24 @@ alwaysApply: true
 - Align outputs with the contract constraints (local/offline, timelines, team roles).
 - Default to Russian for stakeholder chat; keep repository files in English.
 
+## Dual-Track Documentation Strategy
+- **Product TZ (Stage 2)**: `documentation/02-requirements/` — single source of truth for product requirements.
+- **Prototype specs (Stage 1)**: `documentation/03-prototypes/` — facts, demos, artifacts, acceptance without metrics.
+- **Promotion rule**: Only confirmed findings from prototypes → product TZ via PR "promote: P1/P2/P3 → SRS".
+- **Maturity markers**: Mark new sections in SRS as "Draft (awaits prototype confirmation)" until promoted.
+- **Traceability**: Only promoted requirements in BR ↔ FR ↔ UC traceability table.
+
 ## Execution Checklist (per task)
 - Identify source documents and data inputs (documentation + assets).
 - Update BRD/SRS/UC to incorporate atomic tasks (esp. from input-docs table 1–8).
 - Update prototypes with Demo Script and Acceptance Checklist.
 - If significant, record the change in `project-history.md`.
 - Avoid metrics unless explicitly requested at this stage.
+- **For prototypes**: Mark findings as "ready for promotion" when demo/artifacts are complete.
+- **For product TZ**: Only include confirmed, promoted requirements in traceability tables.
+
+## Scope Clarification (Product vs. Process Tasks)
+- We work on product documentation (BRD/SRS/UC) only for product requirements.
+- Do NOT create BR/FR/UC for process/management/analysis tasks (e.g., market research, interviews planning, vendor scouting, budgeting, reporting).
+- Such tasks must be tracked in `documentation/04-project-management/work-plan.md` as project tasks with `PT-###` IDs and are excluded from the requirements register (XLSX).
+- When a previously added item is process‑oriented, reclassify to `PT-###` and update links accordingly (no BR/FR/UC entries).
