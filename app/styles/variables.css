@@ -1,0 +1,49 @@
+/* Глобальные переменные темы и базовые токены дизайна */
+:root {
+    /* Цвета бренда */
+    --color-primary-500: #3498db;
+    --color-primary-600: #2980b9;
+    --color-accent-500: #764ba2;
+    --color-accent-400: #667eea;
+
+    /* Состояния */
+    --color-success-500: #27ae60;
+    --color-warning-500: #f39c12;
+    --color-error-500: #e74c3c;
+
+    /* Текст и фон */
+    --color-text-900: #2c3e50;
+    --color-text-700: #34495e;
+    --color-text-600: #7f8c8d;
+    --color-text-500: #95a5a6;
+    --color-surface: rgba(255, 255, 255, 0.95);
+    --color-surface-soft: rgba(255, 255, 255, 0.9);
+    --color-border: rgba(255, 255, 255, 0.2);
+    --color-divider: #ecf0f1;
+
+    /* Градиенты */
+    --gradient-bg: linear-gradient(135deg, var(--color-accent-400) 0%, var(--color-accent-500) 100%);
+    --gradient-primary: linear-gradient(45deg, var(--color-primary-500), var(--color-primary-600));
+    --gradient-success: linear-gradient(45deg, var(--color-success-500), #229954);
+    --gradient-warning: linear-gradient(45deg, var(--color-warning-500), #e67e22);
+
+    /* Отступы и размеры */
+    --space-1: 5px;
+    --space-2: 10px;
+    --space-3: 12px;
+    --space-4: 15px;
+    --space-5: 20px;
+    --space-6: 24px;
+    --space-7: 30px;
+
+    /* Радиусы и тени */
+    --radius-4: 4px;
+    --radius-6: 6px;
+    --radius-8: 8px;
+    --radius-10: 10px;
+
+    /* Шрифты */
+    --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+

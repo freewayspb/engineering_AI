@@ -198,15 +198,18 @@ class BA_AI_GOST_Client {
         this.files.forEach(file => {
             const fileItem = document.createElement('div');
             fileItem.className = 'file-item';
-            
-            const statusClass = file.status === 'success' ? 'success' : 
-                              file.status === 'error' ? 'error' : '';
-            
-            fileItem.innerHTML = `
-                <span class="file-name">${file.name}</span>
-                <span class="file-status ${statusClass}">${this.getStatusText(file.status)}</span>
-            `;
-            
+
+            const nameEl = document.createElement('span');
+            nameEl.className = 'file-name';
+            nameEl.textContent = file.name;
+
+            const statusEl = document.createElement('span');
+            const statusClass = file.status === 'success' ? 'success' : file.status === 'error' ? 'error' : '';
+            statusEl.className = `file-status ${statusClass}`.trim();
+            statusEl.textContent = this.getStatusText(file.status);
+
+            fileItem.appendChild(nameEl);
+            fileItem.appendChild(statusEl);
             this.fileList.appendChild(fileItem);
         });
     }
@@ -332,7 +335,11 @@ class BA_AI_GOST_Client {
         const successfulFiles = this.files.filter(f => f.status === 'success');
 
         if (successfulFiles.length === 0) {
-            this.resultsContent.innerHTML = '<p style="color: #e74c3c; text-align: center;">Нет успешно обработанных файлов</p>';
+            const p = document.createElement('p');
+            p.style.color = '#e74c3c';
+            p.style.textAlign = 'center';
+            p.textContent = 'Нет успешно обработанных файлов';
+            this.resultsContent.appendChild(p);
             return;
         }
 
@@ -361,39 +368,97 @@ class BA_AI_GOST_Client {
                 }
             }).render(tableContainer);
 
-            // Детали под таблицей
-            const details = successfulFiles.map(file => `
-                <details style="margin-top: 10px;">
-                    <summary style="cursor: pointer; color: #3498db;">${file.name}: извлеченный текст</summary>
-                    <div style="background: #f8f9fa; padding: 10px; margin-top: 5px; border-radius: 4px; font-family: monospace; font-size: 12px;">
-                        ${file.result.extractedData.extractedText}
-                    </div>
-                </details>
-            `).join('');
+            // Детали под таблицей (без innerHTML)
             const detailsWrapper = document.createElement('div');
-            detailsWrapper.innerHTML = details;
+            successfulFiles.forEach(file => {
+                const details = document.createElement('details');
+                details.style.marginTop = '10px';
+
+                const summary = document.createElement('summary');
+                summary.style.cursor = 'pointer';
+                summary.style.color = '#3498db';
+                summary.textContent = `${file.name}: извлеченный текст`;
+
+                const content = document.createElement('div');
+                content.style.background = '#f8f9fa';
+                content.style.padding = '10px';
+                content.style.marginTop = '5px';
+                content.style.borderRadius = '4px';
+                content.style.fontFamily = 'monospace';
+                content.style.fontSize = '12px';
+                content.textContent = file.result.extractedData.extractedText;
+
+                details.appendChild(summary);
+                details.appendChild(content);
+                detailsWrapper.appendChild(details);
+            });
             this.resultsContent.appendChild(detailsWrapper);
         } else {
             // Фолбэк без gridjs
-            const resultsHTML = successfulFiles.map(file => `
-                <div style="background: rgba(39, 174, 96, 0.1); padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-                    <h4 style="color: #27ae60; margin-bottom: 10px;">${file.name}</h4>
-                    <div style="font-size: 14px; color: #2c3e50;">
-                        <p><strong>Тип:</strong> ${file.result.type}</p>
-                        <p><strong>Уверенность:</strong> ${Math.round(file.result.confidence * 100)}%</p>
-                        <p><strong>Страниц:</strong> ${file.result.extractedData.pages}</p>
-                        <p><strong>Размер:</strong> ${Math.round(file.result.extractedData.metadata.size / 1024)} KB</p>
-                        <details style="margin-top: 10px;">
-                            <summary style="cursor: pointer; color: #3498db;">Показать извлеченный текст</summary>
-                            <div style="background: #f8f9fa; padding: 10px; margin-top: 5px; border-radius: 4px; font-family: monospace; font-size: 12px;">
-                                ${file.result.extractedData.extractedText}
-                            </div>
-                        </details>
-                    </div>
-                </div>
-            `).join('');
-            this.resultsContent.innerHTML = resultsHTML;
+            successfulFiles.forEach(file => {
+                const card = document.createElement('div');
+                card.style.background = 'rgba(39, 174, 96, 0.1)';
+                card.style.padding = '15px';
+                card.style.borderRadius = '8px';
+                card.style.marginBottom = '15px';
+
+                const title = document.createElement('h4');
+                title.style.color = '#27ae60';
+                title.style.marginBottom = '10px';
+                title.textContent = file.name;
+
+                const box = document.createElement('div');
+                box.style.fontSize = '14px';
+                box.style.color = '#2c3e50';
+
+                const pType = document.createElement('p');
+                pType.innerHTML = '<strong>Тип:</strong> ' + this.escapeForHTML(file.result.type);
+
+                const pConf = document.createElement('p');
+                pConf.innerHTML = '<strong>Уверенность:</strong> ' + Math.round(file.result.confidence * 100) + '%';
+
+                const pPages = document.createElement('p');
+                pPages.innerHTML = '<strong>Страниц:</strong> ' + file.result.extractedData.pages;
+
+                const pSize = document.createElement('p');
+                pSize.innerHTML = '<strong>Размер:</strong> ' + Math.round(file.result.extractedData.metadata.size / 1024) + ' KB';
+
+                const details = document.createElement('details');
+                details.style.marginTop = '10px';
+                const summary = document.createElement('summary');
+                summary.style.cursor = 'pointer';
+                summary.style.color = '#3498db';
+                summary.textContent = 'Показать извлеченный текст';
+                const content = document.createElement('div');
+                content.style.background = '#f8f9fa';
+                content.style.padding = '10px';
+                content.style.marginTop = '5px';
+                content.style.borderRadius = '4px';
+                content.style.fontFamily = 'monospace';
+                content.style.fontSize = '12px';
+                content.textContent = file.result.extractedData.extractedText;
+
+                details.appendChild(summary);
+                details.appendChild(content);
+
+                box.appendChild(pType);
+                box.appendChild(pConf);
+                box.appendChild(pPages);
+                box.appendChild(pSize);
+                box.appendChild(details);
+
+                card.appendChild(title);
+                card.appendChild(box);
+                this.resultsContent.appendChild(card);
+            });
         }
+    }
+
+    // Безопасное экранирование для использования в внутренних фрагментах HTML, если нужно
+    escapeForHTML(value) {
+        const div = document.createElement('div');
+        div.textContent = String(value);
+        return div.innerHTML;
     }
 
     async exportResults() {
