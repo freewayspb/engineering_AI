@@ -7,6 +7,7 @@ services:
       - "11434:11434"
     volumes:
       - ollama:/root/.ollama
+      - ./ollama:/opt/ollama:ro
     restart: unless-stopped
 
   backend:
@@ -23,6 +24,20 @@ services:
     ports:
       - "8080:8080"
     restart: unless-stopped
+
+  ollama-init:
+    image: ollama/ollama:latest
+    container_name: ollama-init
+    depends_on:
+      - ollama
+    environment:
+      - OLLAMA_HOST=http://ollama:11434
+      - BASE_MODEL=${BASE_MODEL:-llama3.1:8b}
+    volumes:
+      - ollama:/root/.ollama
+      - ./ollama:/opt/ollama:ro
+    entrypoint: ["/bin/bash", "-lc", "chmod +x /opt/ollama/scripts/create_models.sh && BASE_MODEL=$BASE_MODEL bash /opt/ollama/scripts/create_models.sh"]
+    restart: "no"
 
 volumes:
   ollama:
