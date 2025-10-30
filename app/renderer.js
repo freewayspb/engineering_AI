@@ -5,6 +5,13 @@ class BA_AI_GOST_Client {
         this.isProcessing = false;
         this.processedCount = 0;
         this.errorCount = 0;
+        this.maxFiles = 100;
+        this.maxFileSizeBytes = 50 * 1024 * 1024; // 50 MB
+        this.allowedExtensions = ['pdf','dwg','arp','gsfx','xml','rtf','xlsx','docx'];
+        this.notifier = typeof Notyf !== 'undefined' ? new Notyf({
+            duration: 2500,
+            position: { x: 'right', y: 'top' }
+        }) : null;
         
         this.initializeElements();
         this.setupEventListeners();
@@ -14,6 +21,7 @@ class BA_AI_GOST_Client {
     initializeElements() {
         // Основные элементы интерфейса
         this.fileInputArea = document.getElementById('fileInputArea');
+        this.fileHiddenInput = document.getElementById('fileHiddenInput');
         this.fileList = document.getElementById('fileList');
         this.processBtn = document.getElementById('processBtn');
         this.exportBtn = document.getElementById('exportBtn');
@@ -23,7 +31,7 @@ class BA_AI_GOST_Client {
         this.systemStatus = document.getElementById('systemStatus');
         this.processedCountEl = document.getElementById('processedCount');
         this.errorCountEl = document.getElementById('errorCount');
-        this.progressFill = document.getElementById('progressFill');
+        this.progressBar = document.getElementById('progressBar');
         this.progressText = document.getElementById('progressText');
         
         // Области контента
@@ -37,6 +45,17 @@ class BA_AI_GOST_Client {
         this.fileInputArea.addEventListener('click', () => {
             this.openFileDialog();
         });
+
+        if (this.fileHiddenInput) {
+            this.fileHiddenInput.addEventListener('change', (e) => {
+                const files = e.target.files;
+                if (files && files.length > 0) {
+                    this.handleFiles(files);
+                    // сбрасываем значение, чтобы повторный выбор тех же файлов сработал
+                    e.target.value = '';
+                }
+            });
+        }
 
         // Обработка перетаскивания файлов
         this.fileInputArea.addEventListener('dragover', (e) => {
@@ -73,22 +92,89 @@ class BA_AI_GOST_Client {
                 this.addFile(filePath);
             });
         }
+
+        // Тултипы
+        if (typeof tippy !== 'undefined') {
+            tippy(this.fileInputArea, { content: 'Нажмите или перетащите файлы', placement: 'right' });
+            tippy(this.processBtn, { content: 'Запустить обработку', placement: 'right' });
+            tippy(this.exportBtn, { content: 'Экспортировать результаты', placement: 'right' });
+            tippy(this.clearBtn, { content: 'Очистить список', placement: 'right' });
+        }
     }
 
     async openFileDialog() {
         try {
-            // В реальном приложении здесь будет вызов диалога выбора файлов
-            // Пока что симулируем добавление файла
-            this.addFile('example.pdf');
+            if (this.fileHiddenInput) {
+                this.fileHiddenInput.click();
+                return;
+            }
+            this.showError('Элемент выбора файла не найден');
         } catch (error) {
             this.showError('Ошибка при выборе файла: ' + error.message);
         }
     }
 
     handleFiles(fileList) {
-        Array.from(fileList).forEach(file => {
+        if (!fileList || fileList.length === 0) return;
+
+        const incoming = Array.from(fileList);
+
+        // Лимит по количеству
+        if (this.files.length + incoming.length > this.maxFiles) {
+            const available = this.maxFiles - this.files.length;
+            if (available <= 0) {
+                this.showError(`Достигнут лимит файлов (${this.maxFiles})`);
+                return;
+            }
+            this.showError(`Можно добавить ещё только ${available} файл(ов)`);
+        }
+
+        const available = Math.max(0, this.maxFiles - this.files.length);
+        const toProcess = incoming.slice(0, available || incoming.length);
+
+        toProcess.forEach(file => {
+            const validation = this.validateFile(file);
+            if (!validation.ok) {
+                this.showError(validation.error);
+                return;
+            }
+
+            // Проверка дубликатов по имени + размеру (если есть File)
+            const isDuplicate = this.files.some(f => {
+                const sameName = f.name === file.name;
+                const sameSize = f.file && file && typeof f.file.size === 'number' && f.file.size === file.size;
+                return sameName && (sameSize || !file);
+            });
+            if (isDuplicate) {
+                this.showError(`Файл уже добавлен: ${file.name}`);
+                return;
+            }
+
             this.addFile(file.name, file);
         });
+    }
+
+    validateFile(file) {
+        try {
+            if (!file) return { ok: false, error: 'Файл не определён' };
+
+            // Размер
+            if (typeof file.size === 'number' && file.size > this.maxFileSizeBytes) {
+                const mb = Math.round(this.maxFileSizeBytes / (1024*1024));
+                return { ok: false, error: `Файл слишком большой (> ${mb} MB): ${file.name}` };
+            }
+
+            // Расширение
+            const name = file.name || '';
+            const ext = (name.split('.').pop() || '').toLowerCase();
+            if (ext && !this.allowedExtensions.includes(ext)) {
+                return { ok: false, error: `Недопустимый тип файла: .${ext} (${name})` };
+            }
+
+            return { ok: true };
+        } catch (e) {
+            return { ok: false, error: 'Ошибка валидации файла' };
+        }
     }
 
     addFile(fileName, file = null) {
@@ -242,33 +328,72 @@ class BA_AI_GOST_Client {
 
     showResults() {
         this.resultsContent.innerHTML = '';
-        
+
         const successfulFiles = this.files.filter(f => f.status === 'success');
-        
+
         if (successfulFiles.length === 0) {
             this.resultsContent.innerHTML = '<p style="color: #e74c3c; text-align: center;">Нет успешно обработанных файлов</p>';
             return;
         }
 
-        const resultsHTML = successfulFiles.map(file => `
-            <div style="background: rgba(39, 174, 96, 0.1); padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-                <h4 style="color: #27ae60; margin-bottom: 10px;">${file.name}</h4>
-                <div style="font-size: 14px; color: #2c3e50;">
-                    <p><strong>Тип:</strong> ${file.result.type}</p>
-                    <p><strong>Уверенность:</strong> ${Math.round(file.result.confidence * 100)}%</p>
-                    <p><strong>Страниц:</strong> ${file.result.extractedData.pages}</p>
-                    <p><strong>Размер:</strong> ${Math.round(file.result.extractedData.metadata.size / 1024)} KB</p>
-                    <details style="margin-top: 10px;">
-                        <summary style="cursor: pointer; color: #3498db;">Показать извлеченный текст</summary>
-                        <div style="background: #f8f9fa; padding: 10px; margin-top: 5px; border-radius: 4px; font-family: monospace; font-size: 12px;">
-                            ${file.result.extractedData.extractedText}
-                        </div>
-                    </details>
-                </div>
-            </div>
-        `).join('');
+        // Если доступен gridjs, рендерим таблицу
+        if (typeof gridjs !== 'undefined' && gridjs.Grid) {
+            const tableContainer = document.createElement('div');
+            this.resultsContent.appendChild(tableContainer);
 
-        this.resultsContent.innerHTML = resultsHTML;
+            const rows = successfulFiles.map(file => [
+                file.name,
+                file.result.type,
+                Math.round(file.result.confidence * 100) + '%',
+                file.result.extractedData.pages,
+                Math.round(file.result.extractedData.metadata.size / 1024) + ' KB'
+            ]);
+
+            new gridjs.Grid({
+                columns: ['Файл', 'Тип', 'Уверенность', 'Страниц', 'Размер'],
+                data: rows,
+                search: true,
+                sort: true,
+                pagination: { enabled: true, limit: 10 },
+                language: {
+                    'search': { 'placeholder': 'Поиск...' },
+                    'pagination': { 'previous': 'Назад', 'next': 'Вперёд', 'showing': 'Показано', 'results': () => 'строк' }
+                }
+            }).render(tableContainer);
+
+            // Детали под таблицей
+            const details = successfulFiles.map(file => `
+                <details style="margin-top: 10px;">
+                    <summary style="cursor: pointer; color: #3498db;">${file.name}: извлеченный текст</summary>
+                    <div style="background: #f8f9fa; padding: 10px; margin-top: 5px; border-radius: 4px; font-family: monospace; font-size: 12px;">
+                        ${file.result.extractedData.extractedText}
+                    </div>
+                </details>
+            `).join('');
+            const detailsWrapper = document.createElement('div');
+            detailsWrapper.innerHTML = details;
+            this.resultsContent.appendChild(detailsWrapper);
+        } else {
+            // Фолбэк без gridjs
+            const resultsHTML = successfulFiles.map(file => `
+                <div style="background: rgba(39, 174, 96, 0.1); padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                    <h4 style="color: #27ae60; margin-bottom: 10px;">${file.name}</h4>
+                    <div style="font-size: 14px; color: #2c3e50;">
+                        <p><strong>Тип:</strong> ${file.result.type}</p>
+                        <p><strong>Уверенность:</strong> ${Math.round(file.result.confidence * 100)}%</p>
+                        <p><strong>Страниц:</strong> ${file.result.extractedData.pages}</p>
+                        <p><strong>Размер:</strong> ${Math.round(file.result.extractedData.metadata.size / 1024)} KB</p>
+                        <details style="margin-top: 10px;">
+                            <summary style="cursor: pointer; color: #3498db;">Показать извлеченный текст</summary>
+                            <div style="background: #f8f9fa; padding: 10px; margin-top: 5px; border-radius: 4px; font-family: monospace; font-size: 12px;">
+                                ${file.result.extractedData.extractedText}
+                            </div>
+                        </details>
+                    </div>
+                </div>
+            `).join('');
+            this.resultsContent.innerHTML = resultsHTML;
+        }
     }
 
     async exportResults() {
@@ -338,7 +463,9 @@ class BA_AI_GOST_Client {
     }
 
     updateProgress(percent, text) {
-        this.progressFill.style.width = percent + '%';
+        if (this.progressBar) {
+            this.progressBar.value = Math.max(0, Math.min(100, percent));
+        }
         this.progressText.textContent = text;
     }
 
@@ -349,14 +476,16 @@ class BA_AI_GOST_Client {
 
     showError(message) {
         console.error(message);
-        // В реальном приложении здесь будет показ уведомления
-        alert('Ошибка: ' + message);
+        if (this.notifier) {
+            this.notifier.error(message);
+        }
     }
 
     showSuccess(message) {
         console.log(message);
-        // В реальном приложении здесь будет показ уведомления
-        alert('Успех: ' + message);
+        if (this.notifier) {
+            this.notifier.success(message);
+        }
     }
 }
 

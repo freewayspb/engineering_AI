@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI GOST Client</title>
+    <!-- Shoelace theme and components (local, offline) -->
+    <link rel="stylesheet" href="node_modules/@shoelace-style/shoelace/cdn/themes/light.css">
+    <script type="module">
+        import 'node_modules/@shoelace-style/shoelace/cdn/shoelace.js';
+    </script>
+    <!-- 3rd-party styles (local) -->
+    <link rel="stylesheet" href="node_modules/gridjs/dist/theme/mermaid.min.css">
+    <link rel="stylesheet" href="node_modules/notyf/notyf.min.css">
     <style>
         * {
             margin: 0;
@@ -257,14 +265,15 @@
                     <div class="file-text">Перетащите файлы сюда</div>
                     <div class="file-subtext">или нажмите для выбора</div>
                 </div>
+                <input id="fileHiddenInput" class="hidden" type="file" multiple accept=".pdf,.dwg,.arp,.gsfx,.xml,.rtf,.xlsx,.docx,*/*" />
                 <div class="file-list" id="fileList"></div>
             </div>
 
             <div class="section">
                 <h3>Действия</h3>
-                <button class="btn" id="processBtn" disabled>Обработать документы</button>
-                <button class="btn btn-success" id="exportBtn" disabled>Экспорт результатов</button>
-                <button class="btn btn-warning" id="clearBtn">Очистить</button>
+                <sl-button id="processBtn" variant="primary" disabled>Обработать документы</sl-button>
+                <sl-button id="exportBtn" variant="success" disabled>Экспорт результатов</sl-button>
+                <sl-button id="clearBtn" variant="warning">Очистить</sl-button>
             </div>
 
             <div class="section">
@@ -289,9 +298,7 @@
         <div class="main-content">
             <div class="status-panel">
                 <h3>Прогресс обработки</h3>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progressFill"></div>
-                </div>
+                <sl-progress-bar id="progressBar" value="0"></sl-progress-bar>
                 <div id="progressText">Готов к работе</div>
             </div>
 
@@ -305,12 +312,16 @@
             </div>
 
             <div class="loading hidden" id="loadingArea">
-                <div class="spinner"></div>
+                <sl-spinner></sl-spinner>
                 <div>Обработка документов...</div>
             </div>
         </div>
     </div>
 
+    <!-- UMD bundles for local offline usage -->
+    <script src="node_modules/gridjs/dist/gridjs.umd.js"></script>
+    <script src="node_modules/notyf/notyf.min.js"></script>
+    <script src="node_modules/tippy.js/dist/tippy.umd.min.js"></script>
     <script src="renderer.js"></script>
 </body>
 </html>
