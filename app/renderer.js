@@ -8,6 +8,7 @@ class BA_AI_GOST_Client {
         this.maxFiles = 100;
         this.maxFileSizeBytes = 50 * 1024 * 1024; // 50 MB
         this.allowedExtensions = ['pdf','dwg','arp','gsfx','xml','rtf','xlsx','docx'];
+        this.backendUrl = 'http://localhost:8080';
         this.notifier = typeof Notyf !== 'undefined' ? new Notyf({
             duration: 2500,
             position: { x: 'right', y: 'top' }
@@ -16,6 +17,7 @@ class BA_AI_GOST_Client {
         this.initializeElements();
         this.setupEventListeners();
         this.updateUI();
+        this.pingBackend();
     }
 
     initializeElements() {
@@ -38,6 +40,19 @@ class BA_AI_GOST_Client {
         this.resultsArea = document.getElementById('resultsArea');
         this.resultsContent = document.getElementById('resultsContent');
         this.loadingArea = document.getElementById('loadingArea');
+    }
+
+    async pingBackend() {
+        try {
+            const res = await fetch(this.backendUrl + '/health');
+            if (res.ok) {
+                this.showSuccess('Backend подключен');
+                return true;
+            }
+        } catch (e) {
+            this.showError('Backend недоступен: ' + (e?.message || ''));
+        }
+        return false;
     }
 
     setupEventListeners() {
@@ -271,33 +286,65 @@ class BA_AI_GOST_Client {
     }
 
     async processFile(file) {
-        // Симуляция обработки файла
-        return new Promise((resolve, reject) => {
-            setTimeout(() => {
-                try {
-                    // Симуляция успешной обработки или ошибки
-                    if (Math.random() > 0.1) { // 90% успеха
-                        file.status = 'success';
-                        file.result = {
-                            type: this.detectFileType(file.name),
-                            extractedData: this.generateMockData(file.name),
-                            confidence: Math.random() * 0.3 + 0.7 // 70-100%
-                        };
-                        this.processedCount++;
-                    } else {
-                        file.status = 'error';
-                        file.error = 'Ошибка при извлечении данных';
-                        this.errorCount++;
-                    }
-                    resolve();
-                } catch (error) {
-                    file.status = 'error';
-                    file.error = error.message;
-                    this.errorCount++;
-                    reject(error);
-                }
-            }, 1000 + Math.random() * 2000); // 1-3 секунды
+        // Попытка реальной обработки через backend (agent-doc-extract)
+        try {
+            const connected = await this.pingBackend();
+            if (connected) {
+                const prompt = `Извлеки ключевые поля из документа с именем: ${file.name}. Верни JSON с полями fields, confidence, notes.`;
+                const result = await this.callBackendGenerate('agent-doc-extract', prompt);
+                const parsed = this.tryParseJSON(result?.response ?? '');
+                if (!parsed) throw new Error('Некорректный ответ модели');
+                file.status = 'success';
+                file.result = {
+                    type: this.detectFileType(file.name),
+                    extractedData: {
+                        title: `Документ: ${file.name}`,
+                        pages: parsed?.fields?.pages ?? this.generateMockData(file.name).pages,
+                        extractedText: JSON.stringify(parsed.fields ?? {}, null, 2),
+                        metadata: { size: file.file?.size ?? 0, format: (file.name.split('.').pop() || '').toUpperCase() }
+                    },
+                    confidence: typeof parsed.confidence === 'number' ? parsed.confidence : 0.8
+                };
+                this.processedCount++;
+                return;
+            }
+        } catch (e) {
+            this.showError('Backend обработка не удалась, используем симуляцию');
+        }
+
+        // Фолбэк: симуляция обработки
+        await new Promise((resolve) => setTimeout(resolve, 800));
+        if (Math.random() > 0.1) {
+            file.status = 'success';
+            file.result = {
+                type: this.detectFileType(file.name),
+                extractedData: this.generateMockData(file.name),
+                confidence: Math.random() * 0.3 + 0.7
+            };
+            this.processedCount++;
+        } else {
+            file.status = 'error';
+            file.error = 'Ошибка при извлечении данных';
+            this.errorCount++;
+        }
+    }
+
+    async callBackendGenerate(model, prompt) {
+        const resp = await fetch(this.backendUrl + '/generate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ model, prompt })
         });
+        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+        return await resp.json();
+    }
+
+    tryParseJSON(text) {
+        try {
+            return JSON.parse(text);
+        } catch {
+            return null;
+        }
     }
 
     detectFileType(fileName) {
