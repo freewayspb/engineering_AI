@@ -1,4 +1,4 @@
-# BA AI GOST Client
+# AI GOST Client
 
 Клиентское приложение для системы обработки документов BA_AI_GOST на основе Electron.js.
 
@@ -27,32 +27,32 @@ app/
 
 ### Предварительные требования
 
-- Node.js (версия 16 или выше)
+- Node.js (версия 22 или выше)
 - npm или yarn
 
 ### Установка зависимостей
 
 ```bash
 cd app
-npm install
+yarn install
 ```
 
 ### Запуск в режиме разработки
 
 ```bash
-npm run dev
+yarn run dev
 ```
 
 ### Запуск приложения
 
 ```bash
-npm start
+yarn start
 ```
 
 ### Сборка для распространения
 
 ```bash
-npm run build
+yarn run build
 ```
 
 ## Функциональность
@@ -148,4 +148,4 @@ MIT License
 
 ## Контакты
 
-Команда разработки BA_AI_GOST
+Команда разработки AI_GOST
