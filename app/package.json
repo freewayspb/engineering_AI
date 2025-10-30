@@ -1,7 +1,7 @@
 {
-  "name": "ba-ai-gost-client",
+  "name": "ai-gost-client",
   "version": "1.0.0",
-  "description": "Клиентское приложение для системы BA_AI_GOST",
+  "description": "Client application for AI GOST",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
@@ -15,7 +15,7 @@
     "document-processing",
     "gost"
   ],
-  "author": "BA_AI_GOST Team",
+  "author": "AI GOST Team",
   "license": "MIT",
   "devDependencies": {
     "electron": "^28.0.0",
@@ -25,7 +25,7 @@
     "electron-store": "^8.1.0"
   },
   "build": {
-    "appId": "com.ba-ai-gost.client",
+    "appId": "com.ai-gost.client",
     "productName": "BA AI GOST Client",
     "directories": {
       "output": "dist"
