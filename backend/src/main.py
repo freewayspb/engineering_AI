@@ -1,4 +1,6 @@
+"""FastAPI backend для BA_AI_GOST с локальной Ollama."""
 import os
+import uvicorn
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from .ollama_client import OllamaClient
@@ -23,13 +25,32 @@ app.add_middleware(
 ollama = OllamaClient(base_url=OLLAMA_BASE_URL)
 
 
+@app.get("/")
+async def root():
+    """Root endpoint with available routes."""
+    routes = [route.path for route in app.routes if hasattr(route, 'path')]
+    return {"message": "BA_AI_GOST Backend", "routes": routes}
+
+
 @app.get("/health")
 async def health():
+    """Health check endpoint."""
     return {"status": "ok"}
+
+
+@app.get("/health/ollama")
+async def health_ollama():
+    """Check Ollama connectivity."""
+    try:
+        data = await ollama.list_models()
+        return {"status": "ok", "ollama_url": OLLAMA_BASE_URL, "models_available": len(data.get("models", []))}
+    except Exception as e:
+        raise HTTPException(status_code=503, detail=f"Ollama unavailable: {str(e)}")
 
 
 @app.get("/models")
 async def list_models():
+    """List available Ollama models."""
     try:
         data = await ollama.list_models()
         return data
@@ -39,15 +60,19 @@ async def list_models():
 
 @app.post("/generate")
 async def generate(req: GenerateRequest):
+    """Generate text using an Ollama model."""
     try:
         data = await ollama.generate(model=req.model, prompt=req.prompt, options=req.options or {})
         return data
+    except ConnectionError as e:
+        raise HTTPException(status_code=503, detail=str(e))
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=f"Generation error: {str(e)}")
 
 
 @app.post("/chat")
 async def chat(req: ChatRequest):
+    """Chat with an Ollama model using a message history."""
     try:
         data = await ollama.chat(model=req.model, messages=req.messages, options=req.options or {})
         return data
@@ -56,7 +81,6 @@ async def chat(req: ChatRequest):
 
 
 if __name__ == "__main__":
-    import uvicorn
     uvicorn.run(app, host=API_HOST, port=API_PORT)
 
 

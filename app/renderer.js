@@ -8,6 +8,7 @@ class BA_AI_GOST_Client {
         this.maxFiles = 100;
         this.maxFileSizeBytes = 50 * 1024 * 1024; // 50 MB
         this.allowedExtensions = ['pdf','dwg','arp','gsfx','xml','rtf','xlsx','docx'];
+        // Frontend → Backend API (не напрямую в Ollama!)
         this.backendUrl = 'http://localhost:8080';
         this.notifier = typeof Notyf !== 'undefined' ? new Notyf({
             duration: 2500,

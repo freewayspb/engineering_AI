@@ -24,6 +24,15 @@ pip install -U pip
 pip install -e .
 ```
 
+**Примечание:** Если `pip` не найден, используйте `pip3` или `python3 -m pip`:
+```bash
+pip3 install -U pip
+pip3 install -e .
+# или
+python3 -m pip install -U pip
+python3 -m pip install -e .
+```
+
 2. Запустить Ollama (если не через docker):
 ```bash
 ollama serve

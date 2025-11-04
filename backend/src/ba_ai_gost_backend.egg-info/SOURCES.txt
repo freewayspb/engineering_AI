@@ -1,0 +1,10 @@
+README.md
+pyproject.toml
+src/main.py
+src/ollama_client.py
+src/schemas.py
+src/ba_ai_gost_backend.egg-info/PKG-INFO
+src/ba_ai_gost_backend.egg-info/SOURCES.txt
+src/ba_ai_gost_backend.egg-info/dependency_links.txt
+src/ba_ai_gost_backend.egg-info/requires.txt
+src/ba_ai_gost_backend.egg-info/top_level.txt
