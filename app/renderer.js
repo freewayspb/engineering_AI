@@ -7,7 +7,7 @@ class BA_AI_GOST_Client {
         this.errorCount = 0;
         this.maxFiles = 100;
         this.maxFileSizeBytes = 50 * 1024 * 1024; // 50 MB
-        this.allowedExtensions = ['pdf','dwg','arp','gsfx','xml','rtf','xlsx','docx'];
+        this.allowedExtensions = ['pdf','dwg','dxf','arp','gsfx','xml','rtf','xlsx','docx'];
         // Frontend → Backend API (не напрямую в Ollama!)
         this.backendUrl = 'http://localhost:8080';
         this.notifier = typeof Notyf !== 'undefined' ? new Notyf({
@@ -291,20 +291,20 @@ class BA_AI_GOST_Client {
         try {
             const connected = await this.pingBackend();
             if (connected) {
-                const prompt = `Извлеки ключевые поля из документа с именем: ${file.name}. Верни JSON с полями fields, confidence, notes.`;
-                const result = await this.callBackendGenerate('agent-doc-extract', prompt);
-                const parsed = this.tryParseJSON(result?.response ?? '');
-                if (!parsed) throw new Error('Некорректный ответ модели');
+                const prompt = `Сделай самари чертежа: ${file.name}. Верни описание чертежа`;
+                const result = await this.callBackendGenerate('agent-doc-extract', prompt, file);
+                // const parsed = this.tryParseJSON(result?.response ?? '');
+                // if (!parsed) throw new Error('Некорректный ответ модели');
                 file.status = 'success';
                 file.result = {
                     type: this.detectFileType(file.name),
                     extractedData: {
                         title: `Документ: ${file.name}`,
-                        pages: parsed?.fields?.pages ?? this.generateMockData(file.name).pages,
-                        extractedText: JSON.stringify(parsed.fields ?? {}, null, 2),
+                        pages: this.generateMockData(file.name).pages,
+                        extractedText: result?.response ?? '',
                         metadata: { size: file.file?.size ?? 0, format: (file.name.split('.').pop() || '').toUpperCase() }
                     },
-                    confidence: typeof parsed.confidence === 'number' ? parsed.confidence : 0.8
+                    confidence: 0.8
                 };
                 this.processedCount++;
                 return;
@@ -330,18 +330,31 @@ class BA_AI_GOST_Client {
         }
     }
 
-    async callBackendGenerate(model, prompt) {
-        const resp = await fetch(this.backendUrl + '/generate', {
+    async callBackendGenerate(model, prompt, fileInfo) {
+        if (!fileInfo || !fileInfo.file) {
+            throw new Error('Файл для отправки не найден');
+        }
+
+        const formData = new FormData();
+        formData.append('question', prompt);
+
+        const uploadFile = fileInfo.file;
+        const fileName = fileInfo.name || uploadFile.name || 'document.json';
+        formData.append('json_file', uploadFile, fileName);
+
+        const resp = await fetch(this.backendUrl + '/json-query', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ model, prompt })
+            body: formData
         });
         if (!resp.ok) throw new Error('HTTP ' + resp.status);
         return await resp.json();
     }
 
     tryParseJSON(text) {
-        try {
+        try {   
+            console.log("!!!!!!!! tryParseJSON !!!!!!!!!!");
+            console.log(text);
+            console.log("!!!!!!!! tryParseJSON !!!!!!!!!!");
             return JSON.parse(text);
         } catch {
             return null;
@@ -353,6 +366,7 @@ class BA_AI_GOST_Client {
         const typeMap = {
             'pdf': 'PDF документ',
             'dwg': 'Чертеж AutoCAD',
+            'dxf': 'Чертеж AutoCAD',
             'arp': 'Архивный файл',
             'gsfx': 'Графический файл',
             'xml': 'XML документ',
