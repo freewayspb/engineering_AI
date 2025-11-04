@@ -1,11 +1,16 @@
 """FastAPI backend для BA_AI_GOST с локальной Ollama."""
+from __future__ import annotations
+
+from typing import List
 import os
 import uvicorn
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, File, Form, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from .ollama_client import OllamaClient
 from .schemas import GenerateRequest, ChatRequest
 
+
+from .services import process_json_query, process_vision_query
 
 API_HOST = os.getenv("API_HOST", "0.0.0.0")
 API_PORT = int(os.getenv("API_PORT", "8080"))
@@ -22,7 +27,23 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-ollama = OllamaClient(base_url=OLLAMA_BASE_URL)
+# ollama = OllamaClient(base_url=OLLAMA_BASE_URL)
+
+
+@app.post("/vision-query")
+async def vision_query(
+    files: List[UploadFile] = File(..., description="One or more image files"),
+    question: str = Form(..., description="Question to ask the vision model"),
+):
+    return await process_vision_query(files, question)
+
+
+@app.post("/json-query")
+async def json_query(
+    json_file: str = File(..., description="JSON file to provide as context"),
+    question: str = Form(..., description="Question to ask the DeepSeek model"),
+):
+    return await process_json_query(json_file, question)
 
 
 @app.get("/")
