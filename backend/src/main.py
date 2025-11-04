@@ -40,7 +40,7 @@ async def vision_query(
 
 @app.post("/json-query")
 async def json_query(
-    json_file: str = File(..., description="JSON file to provide as context"),
+    json_file: UploadFile = File(..., description="JSON file to provide as context"),
     question: str = Form(..., description="Question to ask the DeepSeek model"),
 ):
     return await process_json_query(json_file, question)

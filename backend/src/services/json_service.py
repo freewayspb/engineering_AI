@@ -12,8 +12,11 @@ from fastapi import HTTPException, UploadFile
 from .console_json_ollama import run_console_json_ollama
 from .dxf_console_service import convert_dxf_upload_to_json
 
-async def process_json_query(json_file: str, question: str) -> dict:
-    filename = json_file or "uploaded.json"
+async def process_json_query(json_file: UploadFile, question: str) -> dict:
+    if json_file is None:
+        raise HTTPException(status_code=400, detail="JSON file is required")
+
+    filename = json_file.filename or "uploaded.json"
     suffix = Path(filename).suffix.lower()
 
     intermediate_path: Path | None = None

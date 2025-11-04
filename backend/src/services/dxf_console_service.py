@@ -7,9 +7,12 @@ import json
 import os
 
 import tempfile
+from pathlib import Path
 from typing import TYPE_CHECKING, Any, Dict
 
 from fastapi import HTTPException, UploadFile
+
+from .compat_asyncio import to_thread
 
 try:  # pragma: no cover - dependency availability is runtime-specific
     import ezdxf  # type: ignore
@@ -190,10 +193,33 @@ def convert_dwg_to_json(input_file, output_file=None):
 
 async def convert_dxf_upload_to_json(dxf_file: UploadFile) -> Dict[str, Any]:
 
-    input_file = dxf_file
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".json") as temp_output:
-        output_file = temp_output.name
+    if dxf_file is None:
+        raise HTTPException(status_code=400, detail="DXF/DWG file is required")
 
-    return convert_dwg_to_json(input_file, output_file)
+    filename = dxf_file.filename or "uploaded.dxf"
+    suffix = Path(filename).suffix or ".dxf"
+
+    payload = await dxf_file.read()
+    await dxf_file.seek(0)
+    if not payload:
+        raise HTTPException(status_code=400, detail="Uploaded DXF/DWG file is empty")
+
+    with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as temp_input:
+        temp_input.write(payload)
+        temp_input_path = Path(temp_input.name)
+
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".json") as temp_output:
+        output_path = Path(temp_output.name)
+
+    try:
+        result = await to_thread(convert_dwg_to_json, str(temp_input_path), str(output_path))
+    finally:
+        temp_input_path.unlink(missing_ok=True)
+        output_path.unlink(missing_ok=True)
+
+    if result is None:
+        raise HTTPException(status_code=500, detail="Failed to convert DXF/DWG to JSON")
+
+    return result
 
 __all__ = ["convert_dxf_upload_to_json"]
