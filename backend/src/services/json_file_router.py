@@ -8,6 +8,7 @@ from fastapi import HTTPException, UploadFile
 
 from .file_handlers.dxf_console_service import convert_dxf_upload_to_json
 from .file_handlers.gsfx_upload_service import convert_gsfx_upload_to_json
+from .file_handlers.arp_upload_service import convert_arp_upload_to_json
 
 Handler = Callable[[UploadFile], Awaitable[dict[str, Any]]]
 
@@ -15,6 +16,7 @@ HANDLER_MAP: Dict[str, Handler] = {
     ".dxf": convert_dxf_upload_to_json,
     ".dwg": convert_dxf_upload_to_json,
     ".gsfx": convert_gsfx_upload_to_json,
+    ".arp": convert_arp_upload_to_json,
 }
 
 
