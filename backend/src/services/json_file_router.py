@@ -6,7 +6,7 @@ from typing import Any, Awaitable, Callable, Dict
 
 from fastapi import HTTPException, UploadFile
 
-from .dxf_console_service import convert_dxf_upload_to_json
+from .file_handlers.dxf_console_service import convert_dxf_upload_to_json
 
 Handler = Callable[[UploadFile], Awaitable[dict[str, Any]]]
 

@@ -12,7 +12,7 @@ from typing import TYPE_CHECKING, Any, Dict
 
 from fastapi import HTTPException, UploadFile
 
-from .compat_asyncio import to_thread
+from ..utils.compat_asyncio import to_thread
 
 try:  # pragma: no cover - dependency availability is runtime-specific
     import ezdxf  # type: ignore

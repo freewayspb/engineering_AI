@@ -4,7 +4,7 @@ import json
 
 import tempfile
 from pathlib import Path
-from .compat_asyncio import to_thread
+from .utils.compat_asyncio import to_thread
 
 from fastapi import HTTPException, UploadFile
 
