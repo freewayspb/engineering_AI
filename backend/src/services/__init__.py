@@ -1,6 +1,5 @@
 from .console_json_ollama import run_console_json_ollama
 from .console_vision_ollama import run_console_vision_ollama
-from .dxf_service import convert_dxf_upload_to_json
 from .json_service import process_json_query
 from .vision import process_vision_query
 

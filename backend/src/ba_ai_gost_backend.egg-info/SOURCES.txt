@@ -13,7 +13,6 @@ src/services/compat_asyncio.py
 src/services/console_json_ollama.py
 src/services/console_vision_ollama.py
 src/services/dxf_console_service.py
-src/services/dxf_service.py
 src/services/json_service.py
 src/services/ollama_service.py
 src/services/vision.py
