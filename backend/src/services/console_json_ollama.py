@@ -17,10 +17,10 @@ def run_console_json_ollama(question: str, file_path: str) -> dict:
         raise UnicodeDecodeError(exc.encoding, exc.object, exc.start, exc.end, "Unable to decode file as UTF-8")
 
     prompt = (
-        "You are provided with file context. "
-        "Use it to answer the user's question clearly and concisely.\n\n"
-        f"Question:\n{question}\n\n"
-        f"File Context ({path.name}):\n{file_contents}"
+        "Вам предоставлен контекст из файла. "
+        "Используйте его, чтобы ответить на вопрос пользователя ясно и кратко.\n\n"
+        f"Вопрос:\n{question}\n\n"
+        f"Контекст файла ({path.name}):\n{file_contents}"
     )
 
     try:
