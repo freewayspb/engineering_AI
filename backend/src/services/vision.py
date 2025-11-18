@@ -1,42 +1,45 @@
 from __future__ import annotations
 
+from pathlib import Path
+from typing import Optional
 import base64
-from typing import List
 
 from fastapi import HTTPException, UploadFile
 
 from .ollama_service import call_ollama
 
 
-async def process_vision_query(files: List[UploadFile], question: str) -> dict:
-    if not files:
-        raise HTTPException(status_code=400, detail="At least one image file is required")
+async def process_vision_query(image_file: UploadFile, question: str) -> dict:
+    if image_file is None:
+        raise HTTPException(status_code=400, detail="Требуется загрузить изображение")
 
-    encoded_images: List[str] = []
-    for upload in files:
-        data = await upload.read()
-        if not data:
-            raise HTTPException(status_code=400, detail=f"File '{upload.filename}' is empty")
-        encoded_images.append(base64.b64encode(data).decode("utf-8"))
+    data = await image_file.read()
 
-    content_blocks = [{"type": "text", "text": question}]
-    content_blocks.extend({"type": "image", "image": encoded} for encoded in encoded_images)
+    if not data:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Файл '{image_file.filename or 'изображение'}' пустой",
+        )
 
-    payload = {
-        "model": "llama3.2-vision",
-        "stream": False,
-        "messages": [
-            {
-                "role": "user",
-                "content": content_blocks,
-            }
-        ],
-    }
+    try:
+        encoder_data = base64.b64encode(data).decode("utf-8")
 
-    ollama_response = await call_ollama("/api/chat", payload)
+        payload = {
+            "model": "llama3.2-vision",
+            "stream": False,
+            "prompt": "Опиши что видно на изображении?",
+            "images": [encoder_data],
+        }
+
+        ollama_response = await call_ollama("/api/generate", payload)
+    except Exception as exc:
+        raise HTTPException(
+            status_code=502,
+            detail=f"Ошибка при запросе к Ollama: {exc}",
+        ) from exc
 
     return {
         "model": "llama3.2-vision",
-        "response": ollama_response,
+        "response": ollama_response.get("response"),
     }
 

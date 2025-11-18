@@ -7,7 +7,7 @@ class BA_AI_GOST_Client {
         this.errorCount = 0;
         this.maxFiles = 100;
         this.maxFileSizeBytes = 50 * 1024 * 1024; // 50 MB
-        this.allowedExtensions = ['pdf','dwg','dxf','arp','gsfx','xml','rtf','xlsx','docx'];
+        this.allowedExtensions = ['pdf','dwg','dxf','arp','gsfx','xml','rtf','xlsx','docx', 'jpg', 'jpeg', 'png', 'gif', 'bmp', 'tiff', 'ico', 'webp'];
         // Frontend → Backend API (не напрямую в Ollama!)
         this.backendUrl = 'http://localhost:8080';
         this.notifier = typeof Notyf !== 'undefined' ? new Notyf({
@@ -291,7 +291,7 @@ class BA_AI_GOST_Client {
         try {
             const connected = await this.pingBackend();
             if (connected) {
-                const prompt = `Сделай самари чертежа: ${file.name}. Верни описание чертежа`;
+                const prompt = `Сделай самари файла: ${file.name}. Верни описание`;
                 const result = await this.callBackendGenerate('agent-doc-extract', prompt, file);
                 // const parsed = this.tryParseJSON(result?.response ?? '');
                 // if (!parsed) throw new Error('Некорректный ответ модели');
@@ -372,7 +372,15 @@ class BA_AI_GOST_Client {
             'xml': 'XML документ',
             'rtf': 'RTF документ',
             'xlsx': 'Excel таблица',
-            'docx': 'Word документ'
+            'docx': 'Word документ',
+            'jpg': 'Изображение',
+            'jpeg': 'Изображение',
+            'png': 'Изображение',
+            'gif': 'Изображение',
+            'bmp': 'Изображение',
+            'tiff': 'Изображение',
+            'ico': 'Изображение',
+            'webp': 'Изображение'
         };
         return typeMap[ext] || 'Неизвестный тип';
     }

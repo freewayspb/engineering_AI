@@ -58,7 +58,7 @@ function createMenu() {
             const result = await dialog.showOpenDialog({
               properties: ['openFile'],
               filters: [
-                { name: 'Документы', extensions: ['pdf', 'dwg', 'dxf', 'arp', 'gsfx', 'xml', 'rtf', 'xlsx', 'docx'] },
+                { name: 'Документы', extensions: ['pdf', 'dwg', 'dxf', 'arp', 'gsfx', 'xml', 'rtf', 'xlsx', 'docx', 'jpg', 'jpeg', 'png', 'gif', 'bmp', 'tiff', 'ico', 'webp'] },
                 { name: 'Все файлы', extensions: ['*'] }
               ]
             });

@@ -4,7 +4,7 @@ from pathlib import Path
 import subprocess
 
 
-def run_console_json_ollama(question: str, file_path: str) -> dict:
+async def run_console_json_ollama(question: str, file_path: str) -> dict:
     """Run the DeepSeek model via the Ollama CLI using JSON/file context."""
 
     path = Path(file_path).expanduser().resolve()
@@ -16,6 +16,7 @@ def run_console_json_ollama(question: str, file_path: str) -> dict:
     except UnicodeDecodeError as exc:
         raise UnicodeDecodeError(exc.encoding, exc.object, exc.start, exc.end, "Unable to decode file as UTF-8")
 
+    question = "Опиши файл несколькими предложениями, подведи итог. Сделай выводы."
     prompt = (
         "Вам предоставлен контекст из файла. "
         "Используйте его, чтобы ответить на вопрос пользователя ясно и кратко.\n\n"

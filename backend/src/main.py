@@ -25,17 +25,15 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
-)
-
-# ollama = OllamaClient(base_url=OLLAMA_BASE_URL)
+)# ollama = OllamaClient(base_url=OLLAMA_BASE_URL)
 
 
 @app.post("/vision-query")
 async def vision_query(
-    files: List[UploadFile] = File(..., description="One or more image files"),
+    image_file: UploadFile = File(..., description="One or more image files"),
     question: str = Form(..., description="Question to ask the vision model"),
 ):
-    return await process_vision_query(files, question)
+    return await process_vision_query(image_file, question)
 
 
 @app.post("/json-query")
@@ -43,7 +41,8 @@ async def json_query(
     json_file: UploadFile = File(..., description="JSON file to provide as context"),
     question: str = Form(..., description="Question to ask the DeepSeek model"),
 ):
-    return await process_json_query(json_file, question)
+    return await process_vision_query(json_file, question)
+    # return await process_json_query(json_file, question)
 
 
 @app.get("/")

@@ -6,12 +6,12 @@ import os
 import httpx
 from fastapi import HTTPException
 
-
 OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
 
 
 async def call_ollama(endpoint: str, payload: dict) -> dict:
     url = f"{OLLAMA_BASE_URL.rstrip('/')}/{endpoint.lstrip('/')}"
+
     async with httpx.AsyncClient(timeout=httpx.Timeout(60.0)) as client:
         try:
             response = await client.post(url, json=payload)
@@ -28,8 +28,9 @@ async def call_ollama(endpoint: str, payload: dict) -> dict:
         )
 
     try:
-        response_json = await response.json()
-        _extract_assistant_message(response_json)
+        response_json = response.json()
+
+        return response_json
     except json.JSONDecodeError as exc:
         raise HTTPException(status_code=502, detail="Invalid JSON from Ollama") from exc
 
