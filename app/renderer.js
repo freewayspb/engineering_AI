@@ -10,6 +10,7 @@ class BA_AI_GOST_Client {
         this.allowedExtensions = ['pdf','dwg','dxf','arp','gsfx','xml','rtf','xlsx','docx', 'jpg', 'jpeg', 'png', 'gif', 'bmp', 'tiff', 'ico', 'webp'];
         // Frontend → Backend API (не напрямую в Ollama!)
         this.backendUrl = 'http://localhost:8080';
+        this.responseLanguage = 'ru'; // Язык ответа по умолчанию
         this.notifier = typeof Notyf !== 'undefined' ? new Notyf({
             duration: 2500,
             position: { x: 'right', y: 'top' }
@@ -41,6 +42,9 @@ class BA_AI_GOST_Client {
         this.resultsArea = document.getElementById('resultsArea');
         this.resultsContent = document.getElementById('resultsContent');
         this.loadingArea = document.getElementById('loadingArea');
+        
+        // Элемент выбора языка
+        this.responseLanguageSelect = document.getElementById('responseLanguage');
     }
 
     async pingBackend() {
@@ -101,6 +105,23 @@ class BA_AI_GOST_Client {
         this.clearBtn.addEventListener('click', () => {
             this.clearAll();
         });
+
+        // Обработка изменения языка ответа
+        if (this.responseLanguageSelect) {
+            // Инициализируем значение по умолчанию из селектора
+            this.responseLanguage = this.responseLanguageSelect.value || 'ru';
+            console.log('Язык ответа инициализирован:', this.responseLanguage);
+            
+            // Обработчик изменения языка
+            this.responseLanguageSelect.addEventListener('change', (e) => {
+                const newValue = e.target.value || 'ru';
+                this.responseLanguage = newValue;
+                console.log('Язык ответа изменен на:', newValue);
+            });
+        } else {
+            console.warn('Элемент responseLanguageSelect не найден, используем значение по умолчанию: ru');
+            this.responseLanguage = 'ru';
+        }
 
         // Слушатель событий от основного процесса
         if (window.electronAPI) {
@@ -287,47 +308,49 @@ class BA_AI_GOST_Client {
     }
 
     async processFile(file) {
-        // Попытка реальной обработки через backend (agent-doc-extract)
+        // Обработка через backend
         try {
             const connected = await this.pingBackend();
-            if (connected) {
-                const prompt = `Сделай самари файла: ${file.name}. Верни описание`;
-                const result = await this.callBackendGenerate('agent-doc-extract', prompt, file);
-                // const parsed = this.tryParseJSON(result?.response ?? '');
-                // if (!parsed) throw new Error('Некорректный ответ модели');
-                file.status = 'success';
-                file.result = {
-                    type: this.detectFileType(file.name),
-                    extractedData: {
-                        title: `Документ: ${file.name}`,
-                        pages: this.generateMockData(file.name).pages,
-                        extractedText: result?.response ?? '',
-                        metadata: { size: file.file?.size ?? 0, format: (file.name.split('.').pop() || '').toUpperCase() }
-                    },
-                    confidence: 0.8
-                };
-                this.processedCount++;
-                return;
+            if (!connected) {
+                throw new Error('Backend недоступен. Проверьте, что сервер запущен на http://localhost:8080');
             }
-        } catch (e) {
-            this.showError('Backend обработка не удалась, используем симуляцию');
-        }
 
-        // Фолбэк: симуляция обработки
-        await new Promise((resolve) => setTimeout(resolve, 800));
-        if (Math.random() > 0.1) {
+            const prompt = `Опиши подробно, что изображено на этом изображении. Название файла: ${file.name}`;
+            const result = await this.callBackendGenerate('agent-doc-extract', prompt, file);
+            
+            if (!result || !result.response) {
+                throw new Error('Получен пустой ответ от модели');
+            }
+
             file.status = 'success';
             file.result = {
                 type: this.detectFileType(file.name),
-                extractedData: this.generateMockData(file.name),
-                confidence: Math.random() * 0.3 + 0.7
+                extractedData: {
+                    title: `Документ: ${file.name}`,
+                    pages: 1, // Будет определено из ответа модели при необходимости
+                    extractedText: result.response,
+                    metadata: { 
+                        size: file.file?.size ?? 0, 
+                        format: (file.name.split('.').pop() || '').toUpperCase(),
+                        model: result.model || 'unknown'
+                    }
+                },
+                confidence: 0.8
             };
             this.processedCount++;
-        } else {
+        } catch (e) {
             file.status = 'error';
-            file.error = 'Ошибка при извлечении данных';
+            const errorMessage = e?.message || 'Неизвестная ошибка';
+            file.error = errorMessage;
+            this.showError(`Ошибка обработки файла ${file.name}: ${errorMessage}`);
             this.errorCount++;
         }
+    }
+
+    isImageFile(fileName) {
+        const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'tiff', 'ico', 'webp'];
+        const ext = (fileName.split('.').pop() || '').toLowerCase();
+        return imageExtensions.includes(ext);
     }
 
     async callBackendGenerate(model, prompt, fileInfo) {
@@ -335,18 +358,78 @@ class BA_AI_GOST_Client {
             throw new Error('Файл для отправки не найден');
         }
 
-        const formData = new FormData();
-        formData.append('question', prompt);
-
         const uploadFile = fileInfo.file;
         const fileName = fileInfo.name || uploadFile.name || 'document.json';
-        formData.append('json_file', uploadFile, fileName);
+        const isImage = this.isImageFile(fileName);
 
-        const resp = await fetch(this.backendUrl + '/json-query', {
-            method: 'POST',
-            body: formData
-        });
-        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+        const formData = new FormData();
+        formData.append('question', prompt);
+        
+        // Получаем актуальное значение языка из селектора, если он доступен
+        let currentLanguage = this.responseLanguage || 'ru';
+        if (this.responseLanguageSelect) {
+            currentLanguage = this.responseLanguageSelect.value || currentLanguage;
+        }
+        formData.append('response_language', currentLanguage);
+        console.log('Отправка запроса с языком:', currentLanguage);
+
+        // Используем правильный эндпоинт и параметр в зависимости от типа файла
+        const endpoint = isImage ? '/vision-query' : '/json-query';
+        const fileFieldName = isImage ? 'image_file' : 'json_file';
+        formData.append(fileFieldName, uploadFile, fileName);
+
+        let resp;
+        try {
+            resp = await fetch(this.backendUrl + endpoint, {
+                method: 'POST',
+                body: formData,
+                signal: AbortSignal.timeout(360000) // 6 минут таймаут
+            });
+        } catch (e) {
+            if (e.name === 'TimeoutError') {
+                throw new Error('Превышено время ожидания ответа от сервера (6 минут). Возможно, модель обрабатывает слишком большой файл.');
+            }
+            if (e.name === 'TypeError' && e.message.includes('fetch')) {
+                throw new Error('Не удалось подключиться к серверу. Проверьте, что бэкенд запущен на http://localhost:8080');
+            }
+            throw new Error(`Ошибка сети: ${e.message}`);
+        }
+
+        if (!resp.ok) {
+            let errorDetail = `HTTP ${resp.status}`;
+            try {
+                const errorData = await resp.json();
+                if (errorData.detail) {
+                    if (typeof errorData.detail === 'string') {
+                        errorDetail = errorData.detail;
+                    } else if (errorData.detail.error) {
+                        errorDetail = errorData.detail.error;
+                        if (errorData.detail.payload) {
+                            errorDetail += `: ${errorData.detail.payload}`;
+                        }
+                    }
+                }
+            } catch {
+                // Если не удалось распарсить JSON, используем текст ответа
+                const text = await resp.text();
+                if (text) {
+                    errorDetail = text.substring(0, 200);
+                }
+            }
+            
+            if (resp.status === 502) {
+                throw new Error(`Сервер не может подключиться к Ollama: ${errorDetail}`);
+            } else if (resp.status === 507) {
+                throw new Error(`Недостаточно памяти: ${errorDetail}`);
+            } else if (resp.status === 400) {
+                throw new Error(`Некорректный запрос: ${errorDetail}`);
+            } else if (resp.status === 500) {
+                throw new Error(`Внутренняя ошибка сервера: ${errorDetail}`);
+            } else {
+                throw new Error(`Ошибка сервера (${resp.status}): ${errorDetail}`);
+            }
+        }
+        
         return await resp.json();
     }
 

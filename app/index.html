@@ -38,6 +38,18 @@
             </div>
 
             <div class="section">
+                <h3>Настройки</h3>
+                <div class="status-item" style="margin-bottom: 15px;">
+                    <span class="status-label">Язык ответа:</span>
+                    <select id="responseLanguage" style="width: 100%; margin-top: 5px; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; background: white;">
+                        <option value="ru" selected>Русский</option>
+                        <option value="en">English</option>
+                        <option value="auto">Автоматически</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="section">
                 <h3>Действия</h3>
                 <sl-button id="processBtn" variant="primary" disabled>Обработать документы</sl-button>
                 <sl-button id="exportBtn" variant="success" disabled>Экспорт результатов</sl-button>

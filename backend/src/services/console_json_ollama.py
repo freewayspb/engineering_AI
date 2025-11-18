@@ -1,11 +1,14 @@
 from __future__ import annotations
 
 from pathlib import Path
-import subprocess
+
+from fastapi import HTTPException
+
+from .ollama_service import call_ollama
 
 
-async def run_console_json_ollama(question: str, file_path: str) -> dict:
-    """Run the DeepSeek model via the Ollama CLI using JSON/file context."""
+async def run_console_json_ollama(question: str, file_path: str, response_language: str = "ru") -> dict:
+    """Run the DeepSeek model via the Ollama HTTP API using JSON/file context."""
 
     path = Path(file_path).expanduser().resolve()
     if not path.is_file():
@@ -16,35 +19,59 @@ async def run_console_json_ollama(question: str, file_path: str) -> dict:
     except UnicodeDecodeError as exc:
         raise UnicodeDecodeError(exc.encoding, exc.object, exc.start, exc.end, "Unable to decode file as UTF-8")
 
-    question = "Опиши файл несколькими предложениями, подведи итог. Сделай выводы."
+    # Определяем инструкцию по языку ответа (ВАЖНО: в начале промпта)
+    if response_language == "ru":
+        language_instruction = "ВАЖНО: Отвечайте ТОЛЬКО на русском языке. Все ваши ответы должны быть на русском языке."
+    elif response_language == "en":
+        language_instruction = "IMPORTANT: Respond ONLY in English. All your responses must be in English."
+    elif response_language == "auto":
+        language_instruction = "Respond in the same language as the question or context."
+    else:
+        language_instruction = "ВАЖНО: Отвечайте ТОЛЬКО на русском языке. Все ваши ответы должны быть на русском языке."  # По умолчанию русский
+
     prompt = (
+        f"{language_instruction}\n\n"
         "Вам предоставлен контекст из файла. "
         "Используйте его, чтобы ответить на вопрос пользователя ясно и кратко.\n\n"
         f"Вопрос:\n{question}\n\n"
         f"Контекст файла ({path.name}):\n{file_contents}"
     )
 
+    payload = {
+        "model": "deepseek-r1",
+        "prompt": prompt,
+        "stream": False,
+    }
+
     try:
-        result = subprocess.run(
-            ["ollama", "run", "deepseek-r1"],
-            input=prompt,
-            text=True,
-            capture_output=True,
-            check=True,
-        )
-    except FileNotFoundError as exc:
-        raise RuntimeError("The 'ollama' executable is not available in PATH.") from exc
-    except subprocess.CalledProcessError as exc:
-        stderr = exc.stderr.strip() if exc.stderr else ""
-        raise RuntimeError(
-            "Ollama CLI call failed with exit code "
-            f"{exc.returncode}. {stderr}"
-        ) from exc
+        ollama_response = await call_ollama("/api/generate", payload)
+    except HTTPException as exc:
+        # Пробрасываем HTTPException как есть, чтобы сохранить статус код
+        raise
+    except Exception as exc:
+        error_msg = str(exc)
+        if "Failed to reach Ollama" in error_msg:
+            raise HTTPException(
+                status_code=502,
+                detail="Не удалось подключиться к Ollama. Проверьте, что Ollama запущен и доступен по адресу http://ollama:11434"
+            ) from exc
+        elif "model" in error_msg.lower() and "not found" in error_msg.lower():
+            raise HTTPException(
+                status_code=404,
+                detail=f"Модель 'deepseek-r1' не найдена в Ollama. Установите модель командой: ollama pull deepseek-r1"
+            ) from exc
+        else:
+            raise HTTPException(
+                status_code=500,
+                detail=f"Ошибка при обращении к Ollama: {error_msg}"
+            ) from exc
+
+    response_text = ollama_response.get("response", "").strip()
 
     return {
         "model": "deepseek-r1",
         "prompt": prompt,
-        "response": result.stdout.strip(),
+        "response": response_text,
     }
 
 

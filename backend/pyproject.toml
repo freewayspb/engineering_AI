@@ -13,7 +13,8 @@ dependencies = [
   "httpx>=0.27",
   "pydantic>=2.6",
   "python-multipart>=0.0.9",
-  "ezdxf>=1.4.2"
+  "ezdxf>=1.4.2",
+  "pandas>=2.0.0"
 ]
 
 [project.optional-dependencies]

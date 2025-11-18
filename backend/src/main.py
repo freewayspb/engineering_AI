@@ -32,17 +32,18 @@ app.add_middleware(
 async def vision_query(
     image_file: UploadFile = File(..., description="One or more image files"),
     question: str = Form(..., description="Question to ask the vision model"),
+    response_language: str = Form("ru", description="Language for the response (ru, en, auto)"),
 ):
-    return await process_vision_query(image_file, question)
+    return await process_vision_query(image_file, question, response_language)
 
 
 @app.post("/json-query")
 async def json_query(
     json_file: UploadFile = File(..., description="JSON file to provide as context"),
     question: str = Form(..., description="Question to ask the DeepSeek model"),
+    response_language: str = Form("ru", description="Language for the response (ru, en, auto)"),
 ):
-    return await process_vision_query(json_file, question)
-    # return await process_json_query(json_file, question)
+    return await process_json_query(json_file, question, response_language)
 
 
 @app.get("/")

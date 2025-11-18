@@ -21,7 +21,7 @@ HANDLER_MAP: Dict[str, Handler] = {
 }
 
 
-async def load_raw_json_data(json_file: UploadFile) -> bytes:
+async def load_raw_json_data(json_file: UploadFile) -> str:
     if json_file is None:
         raise HTTPException(status_code=400, detail="JSON file is required")
 
@@ -33,10 +33,25 @@ async def load_raw_json_data(json_file: UploadFile) -> bytes:
     if handler is None:
         raw_bytes = await json_file.read()
         if not raw_bytes:
-            raise HTTPException(status_code=400, detail="Uploaded JSON file is empty")
-        return raw_bytes
+            raise HTTPException(status_code=400, detail="Загруженный файл пустой")
+        
+        # Проверяем, не является ли файл изображением
+        image_extensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff', '.ico', '.webp']
+        if suffix in image_extensions:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Файл '{filename}' является изображением. Используйте эндпоинт /vision-query для обработки изображений."
+            )
+        
+        try:
+            return raw_bytes.decode("utf-8")
+        except UnicodeDecodeError:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Файл '{filename}' не является текстовым файлом в кодировке UTF-8. Для изображений используйте эндпоинт /vision-query."
+            )
 
     converted_payload = await handler(json_file)
 
-    return json.dumps(converted_payload, indent=2, ensure_ascii=False);
+    return json.dumps(converted_payload, indent=2, ensure_ascii=False)
 
