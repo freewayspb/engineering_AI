@@ -48,10 +48,11 @@ async def load_raw_json_data(json_file: UploadFile) -> str:
         try:
             return raw_bytes.decode("utf-8")
         except UnicodeDecodeError:
-            raise HTTPException(
-                status_code=400,
-                detail=f"Файл '{filename}' не является текстовым файлом в кодировке UTF-8. Для изображений используйте эндпоинт /vision-query."
-            )
+            return raw_bytes.decode("latin-1");
+            # raise HTTPException(
+            #     status_code=400,
+            #     detail=f"Файл '{filename}' не является текстовым файлом в кодировке UTF-8. Для изображений используйте эндпоинт /vision-query."
+            # )
 
     converted_payload = await handler(json_file)
 
