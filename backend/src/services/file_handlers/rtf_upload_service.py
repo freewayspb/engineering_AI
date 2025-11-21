@@ -209,17 +209,70 @@ async def convert_rtf_upload_to_json(rtf_file: UploadFile) -> Dict[str, Any]:
 
     filename = rtf_file.filename or "uploaded.rtf"
 
-    payload = await rtf_file.read()
-    await rtf_file.seek(0)
+    try:
+        payload = await rtf_file.read()
+        await rtf_file.seek(0)
+    except Exception as exc:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Ошибка при чтении RTF-файла '{filename}': {str(exc)}"
+        ) from exc
+    
     if not payload:
-        raise HTTPException(status_code=400, detail="Загруженный RTF-файл пуст.")
+        raise HTTPException(status_code=400, detail=f"Загруженный RTF-файл '{filename}' пуст.")
 
-    rtf_text = _decode_rtf_bytes(payload)
+    try:
+        rtf_text = _decode_rtf_bytes(payload)
+    except Exception as exc:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Ошибка при декодировании RTF-файла '{filename}': {str(exc)}"
+        ) from exc
+
+    # Проверяем, что это действительно RTF файл (должен начинаться с {\rtf)
+    if not rtf_text.strip().startswith("{\\rtf"):
+        # Пробуем извлечь текст даже если это не стандартный RTF
+        # Возможно, это простой текстовый файл с расширением .rtf
+        try:
+            # Пробуем просто извлечь весь текст как есть
+            plain_text = rtf_text.strip()
+            paragraphs = [line.strip() for line in plain_text.splitlines() if line.strip()]
+            return {
+                "source_filename": filename,
+                "plain_text": plain_text,
+                "paragraphs": paragraphs,
+                "stats": {
+                    "character_count": len(plain_text),
+                    "paragraph_count": len(paragraphs),
+                },
+                "warning": "Файл не является стандартным RTF, извлечен как простой текст"
+            }
+        except Exception as exc:
+            raise HTTPException(
+                status_code=422,
+                detail=f"Файл '{filename}' не является валидным RTF-файлом и не может быть обработан как текст: {str(exc)}"
+            ) from exc
 
     try:
         parsed = await to_thread(_prepare_rtf_payload, rtf_text)
-    except Exception as exc:  # pragma: no cover - защита от непредвиденных ошибок
-        raise HTTPException(status_code=422, detail="Не удалось распарсить RTF-файл.") from exc
+    except Exception as exc:
+        error_msg = str(exc)
+        # Улучшаем сообщение об ошибке
+        if "UnicodeDecodeError" in error_msg or "decode" in error_msg.lower():
+            raise HTTPException(
+                status_code=422,
+                detail=f"Ошибка кодировки при обработке RTF-файла '{filename}'. Файл может содержать некорректные символы."
+            ) from exc
+        elif "index" in error_msg.lower() or "out of range" in error_msg.lower():
+            raise HTTPException(
+                status_code=422,
+                detail=f"Ошибка парсинга RTF-файла '{filename}'. Файл может быть поврежден или иметь нестандартную структуру."
+            ) from exc
+        else:
+            raise HTTPException(
+                status_code=422,
+                detail=f"Не удалось распарсить RTF-файл '{filename}': {error_msg}"
+            ) from exc
 
     return {
         "source_filename": filename,
