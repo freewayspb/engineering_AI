@@ -6,18 +6,20 @@ from typing import Any, Awaitable, Callable, Dict
 
 from fastapi import HTTPException, UploadFile
 
+from .file_handlers.arp_upload_service import convert_arp_upload_to_json
 from .file_handlers.dxf_console_service import convert_dxf_upload_to_json
 from .file_handlers.gsfx_upload_service import convert_gsfx_upload_to_json
-from .file_handlers.arp_upload_service import convert_arp_upload_to_json
+from .file_handlers.pdf_upload_service import convert_pdf_upload_to_base64_images
 from .file_handlers.rtf_upload_service import convert_rtf_upload_to_json
 from .file_handlers.xlsx_upload_service import convert_xlsx_upload_to_json
 
 Handler = Callable[[UploadFile], Awaitable[dict[str, Any]]]
 
 HANDLER_MAP: Dict[str, Handler] = {
+    ".arp": convert_arp_upload_to_json,
     ".dxf": convert_dxf_upload_to_json,
     ".gsfx": convert_gsfx_upload_to_json,
-    ".arp": convert_arp_upload_to_json,
+    ".pdf": convert_pdf_upload_to_base64_images,
     ".rtf": convert_rtf_upload_to_json,
     ".xlsx": convert_xlsx_upload_to_json,
 }
