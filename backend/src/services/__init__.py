@@ -7,6 +7,7 @@ from .file_handlers.pdf_upload_service import convert_pdf_upload_to_base64_image
 from .file_handlers.rtf_upload_service import convert_rtf_upload_to_json
 from .json_file_router import load_raw_json_data
 from .vision import process_vision_query
+from .image_converter import convert_upload_image_to_base64
 
 __all__ = [
     "run_console_json_ollama",
@@ -18,5 +19,6 @@ __all__ = [
     "load_raw_json_data",
     "process_json_query",
     "process_vision_query",
+    "convert_upload_image_to_base64",
 ]
 
