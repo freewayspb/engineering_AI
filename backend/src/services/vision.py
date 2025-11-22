@@ -6,7 +6,7 @@ from typing import Optional
 from fastapi import HTTPException, UploadFile
 
 from .ollama_service import call_ollama
-from .image_converter import convert_upload_image_to_base64
+from .file_handlers.image_upload_service import convert_upload_image_to_base64
 
 
 async def process_vision_query(image_file: UploadFile, question: str, response_language: str = "ru") -> dict:
