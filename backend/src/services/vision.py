@@ -1,16 +1,40 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Optional
-
 from fastapi import HTTPException, UploadFile
 
 from .ollama_service import call_ollama
 from .file_handlers.image_upload_service import convert_upload_image_to_base64
+from .file_handlers.pdf_upload_service import convert_pdf_upload_to_base64_images
 
 
 async def process_vision_query(image_file: UploadFile, question: str, response_language: str = "ru") -> dict:
-    encoder_data = await convert_upload_image_to_base64(image_file)
+    filename = image_file.filename or ""
+    content_type = (image_file.content_type or "").lower()
+    suffix = Path(filename).suffix.lower()
+
+    is_pdf = suffix == ".pdf" or content_type == "application/pdf"
+    document_context = ""
+
+    if is_pdf:
+        pdf_payload = await convert_pdf_upload_to_base64_images(image_file)
+        encoded_images = [
+            page.get("base64")
+            for page in pdf_payload.get("images", [])
+            if page.get("base64")
+        ]
+        if not encoded_images:
+            raise HTTPException(
+                status_code=422,
+                detail="PDF-файл не содержит обрабатываемых страниц."
+            )
+        document_context = (
+            f"Источник: PDF-файл '{pdf_payload.get('source_filename', filename or 'document.pdf')}', "
+            f"страниц: {pdf_payload.get('page_count', len(encoded_images))}."
+        )
+    else:
+        encoded_image = await convert_upload_image_to_base64(image_file)
+        encoded_images = [encoded_image]
 
     # Формируем промпт в зависимости от языка ответа
     # Используем вопрос пользователя, если он предоставлен, иначе используем стандартный промпт
@@ -43,12 +67,15 @@ async def process_vision_query(image_file: UploadFile, question: str, response_l
         # По умолчанию русский
         prompt = f"Опиши это изображение на русском языке. {base_prompt}"
 
+    if document_context:
+        prompt = f"{document_context}\n{prompt}"
+
     # Используем более легкую модель llava (4.7 GB), так как llama3.2-vision требует слишком много памяти (10.9 GB)
     payload = {
         "model": "llava",
         "stream": False,
         "prompt": prompt,
-        "images": [encoder_data],
+        "images": encoded_images,
         "options": {
             "temperature": 0.5,  # Снижаем температуру для более детерминированных ответов
             "num_predict": 500,  # Увеличиваем максимальную длину ответа

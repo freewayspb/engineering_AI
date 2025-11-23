@@ -348,7 +348,7 @@ class BA_AI_GOST_Client {
     }
 
     isImageFile(fileName) {
-        const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'tiff', 'ico', 'webp'];
+        const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'tiff', 'ico', 'webp', 'pdf'];
         const ext = (fileName.split('.').pop() || '').toLowerCase();
         return imageExtensions.includes(ext);
     }
