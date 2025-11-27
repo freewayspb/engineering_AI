@@ -60,7 +60,7 @@ HANDLER_MAP: Dict[str, HandlerConfig] = {
         handler=convert_pdf_upload_to_base64_images,
         instruction=(
             "Входные данные — изображения страниц PDF, закодированные в Base64. "
-            "Мысленно извлекайте текст/структуру страниц и используйте их при ответе."
+            "Извлеки текст/структуру страниц и используйте их при ответе."
         ),
     ),
     ".rtf": HandlerConfig(
