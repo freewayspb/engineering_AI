@@ -30,6 +30,7 @@ class BA_AI_GOST_Client {
         this.processBtn = document.getElementById('processBtn');
         this.exportBtn = document.getElementById('exportBtn');
         this.clearBtn = document.getElementById('clearBtn');
+        this.questionInput = document.getElementById('questionInput');
         
         // Элементы статуса
         this.systemStatus = document.getElementById('systemStatus');
@@ -267,6 +268,8 @@ class BA_AI_GOST_Client {
             return;
         }
 
+        const userQuestion = (this.questionInput?.value || '').trim();
+
         this.isProcessing = true;
         this.processedCount = 0;
         this.errorCount = 0;
@@ -287,7 +290,7 @@ class BA_AI_GOST_Client {
                 );
 
                 // Симуляция обработки файла
-                await this.processFile(file);
+                await this.processFile(file, userQuestion);
                 
                 this.updateProgress(
                     ((i + 1) / this.files.length) * 100,
@@ -307,7 +310,7 @@ class BA_AI_GOST_Client {
         }
     }
 
-    async processFile(file) {
+    async processFile(file, userQuestion = '') {
         // Обработка через backend
         try {
             const connected = await this.pingBackend();
@@ -315,7 +318,7 @@ class BA_AI_GOST_Client {
                 throw new Error('Backend недоступен. Проверьте, что сервер запущен на http://localhost:8080');
             }
 
-            const prompt = `Опиши подробно, что изображено на этом изображении. Название файла: ${file.name}`;
+            const prompt = this.buildProcessingPrompt(file.name, userQuestion);
             const result = await this.callBackendGenerate('agent-doc-extract', prompt, file);
             
             if (!result || !result.response) {
@@ -466,6 +469,14 @@ class BA_AI_GOST_Client {
             'webp': 'Изображение'
         };
         return typeMap[ext] || 'Неизвестный тип';
+    }
+
+    buildProcessingPrompt(fileName, userQuestion) {
+        const defaultPrompt = `Опиши подробно содержимое документа ${fileName} и предоставь структурированное резюме.`;
+        if (!userQuestion) {
+            return defaultPrompt;
+        }
+        return `${userQuestion}\n\nКонтекст: документ ${fileName}.`;
     }
 
     generateMockData(fileName) {
