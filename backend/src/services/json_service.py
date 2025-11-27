@@ -15,7 +15,7 @@ async def process_json_query(json_file: UploadFile, question: str, response_lang
         raise HTTPException(status_code=400, detail="Файл не предоставлен. Загрузите JSON файл для обработки.")
 
     try:
-        serialized_json = await load_raw_json_data(json_file)
+        routed_payload = await load_raw_json_data(json_file)
     except HTTPException:
         raise
     except Exception as exc:
@@ -25,7 +25,7 @@ async def process_json_query(json_file: UploadFile, question: str, response_lang
         ) from exc
 
     with tempfile.NamedTemporaryFile("w", encoding="utf-8", suffix=".json", delete=False) as temp_file:
-        temp_file.write(serialized_json)
+        temp_file.write(routed_payload.content)
         temp_path = Path(temp_file.name)
 
     try:
@@ -33,6 +33,8 @@ async def process_json_query(json_file: UploadFile, question: str, response_lang
             question,
             str(temp_path),
             response_language,
+            instruction=routed_payload.instruction,
+            original_filename=routed_payload.filename,
         )
     except HTTPException:
         # Пробрасываем HTTPException как есть

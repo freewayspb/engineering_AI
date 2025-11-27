@@ -6,8 +6,19 @@ from fastapi import HTTPException
 
 from .ollama_service import call_ollama
 
+DEFAULT_ROUTER_INSTRUCTION = (
+    "Вам предоставлены данные из файла. Используйте их, чтобы ответить на вопрос пользователя ясно и кратко."
+)
 
-async def run_console_json_ollama(question: str, file_path: str, response_language: str = "ru") -> dict:
+
+async def run_console_json_ollama(
+    question: str,
+    file_path: str,
+    response_language: str = "ru",
+    *,
+    instruction: str | None = None,
+    original_filename: str | None = None,
+) -> dict:
     """Run the DeepSeek model via the Ollama HTTP API using JSON/file context."""
 
     path = Path(file_path).expanduser().resolve()
@@ -29,12 +40,14 @@ async def run_console_json_ollama(question: str, file_path: str, response_langua
     else:
         language_instruction = "ВАЖНО: Отвечайте ТОЛЬКО на русском языке. Все ваши ответы должны быть на русском языке."  # По умолчанию русский
 
+    instruction_block = (instruction or DEFAULT_ROUTER_INSTRUCTION).strip()
+    filename_for_prompt = original_filename or path.name
+
     prompt = (
         f"{language_instruction}\n\n"
-        "Вам предоставлен контекст из файла. "
-        "Используйте его, чтобы ответить на вопрос пользователя ясно и кратко.\n\n"
+        f"{instruction_block}\n\n"
         f"Вопрос:\n{question}\n\n"
-        f"Контекст файла ({path.name}):\n{file_contents}"
+        f"файл ({filename_for_prompt}):\n{file_contents}"
     )
 
     payload = {
