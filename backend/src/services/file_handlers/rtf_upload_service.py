@@ -38,6 +38,7 @@ def _decode_hex_token(token: str, encoding: str) -> str:
 def _rtf_to_text(rtf: str) -> str:
     """
     Минимальный парсер RTF -> plain text.
+    Улучшенная версия с лучшей обработкой ошибок.
     """
     out: List[str] = []
     stack: List[Tuple[bool, int, str]] = []
@@ -47,8 +48,17 @@ def _rtf_to_text(rtf: str) -> str:
 
     i = 0
     length = len(rtf)
+    
+    # Защита от бесконечного цикла
+    max_iterations = length * 2
+    iterations = 0
 
     while i < length:
+        iterations += 1
+        if iterations > max_iterations:
+            # Защита от бесконечного цикла - возвращаем то, что уже извлекли
+            break
+        
         char = rtf[i]
 
         if char == "{":
@@ -82,10 +92,17 @@ def _rtf_to_text(rtf: str) -> str:
                 continue
 
             if control == "'":
-                hex_token = rtf[i + 1 : i + 3]
-                if len(hex_token) == 2 and not ignorable:
-                    out.append(_decode_hex_token(hex_token, codepage))
-                i += 3
+                # Проверяем, что есть достаточно символов для hex-токена
+                if i + 2 < length:
+                    hex_token = rtf[i + 1 : i + 3]
+                    if len(hex_token) == 2 and not ignorable:
+                        decoded = _decode_hex_token(hex_token, codepage)
+                        if decoded:
+                            out.append(decoded)
+                    i += 3
+                else:
+                    # Недостаточно символов - пропускаем
+                    i += 1
                 continue
 
             # Читаем управляющее слово
@@ -149,7 +166,16 @@ def _rtf_to_text(rtf: str) -> str:
 
             if word == "u" and param is not None:
                 code_point = param if param >= 0 else param + 65536
-                out.append(chr(code_point))
+                try:
+                    # Проверяем, что кодовая точка валидна
+                    if 0 <= code_point <= 0x10FFFF:
+                        out.append(chr(code_point))
+                    else:
+                        # Пропускаем невалидную кодовую точку
+                        pass
+                except (ValueError, OverflowError):
+                    # Игнорируем невалидные кодовые точки
+                    pass
                 skip = uc_skip
                 while skip > 0 and i < length:
                     if rtf[i] == "\\" or rtf[i] in "{}":
