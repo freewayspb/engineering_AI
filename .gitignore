@@ -99,3 +99,12 @@ documentation/working/
 *_working.md
 notes/
 personal/
+ревью требований промт.txt
+tools/
+.venv
+.venv_diar
+
+# Generated requirement registers
+requirements_register.csv
+requirements_register.jsonl
+requirements_register.xlsx
