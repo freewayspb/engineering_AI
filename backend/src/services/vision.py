@@ -11,36 +11,37 @@ async def process_vision_query(image_file: UploadFile, question: str, response_l
     encoded_images = routed_payload.images
     document_context = routed_payload.context
 
-    # Формируем промпт в зависимости от языка ответа
-    # Используем вопрос пользователя, если он предоставлен, иначе используем стандартный промпт
-    if question and question.strip():
-        # Очищаем вопрос от старых формулировок
-        cleaned_question = question.strip()
+    cleaned_question = question and question.strip() or "";
+    cleaned_question_prefix = ""
+    prompt_prefix = ""
+
         # Заменяем старые формулировки на более понятные
-        if "самари" in cleaned_question.lower() or "самари файла" in cleaned_question.lower():
-            if response_language == "ru":
-                cleaned_question = "Опиши подробно, что изображено на этом изображении. Опиши все элементы интерфейса, текст, цвета и структуру."
-            else:
-                cleaned_question = "Describe in detail what is shown in this image. Describe all interface elements, text, colors and structure."
-        base_prompt = cleaned_question
-    else:
+    if "самари" in cleaned_question.lower():
         if response_language == "ru":
-            base_prompt = "Опиши подробно, что изображено на этом изображении. Опиши все элементы интерфейса, текст, цвета и структуру."
-        elif response_language == "en":
-            base_prompt = "Describe in detail what is shown in this image. Describe all interface elements, text, colors and structure."
+            cleaned_question_prefix = "Опиши подробно, что изображено на этом изображении. "
         else:
-            base_prompt = "Describe in detail what is shown in this image. Describe all interface elements, text, colors and structure."
-    
-    # Формируем финальный промпт с учетом языка
+            cleaned_question_prefix = "Describe in detail what is shown in this image. "
+
+
+    if not cleaned_question:
+        if response_language == "ru":
+            cleaned_question = "Опиши подробно, что изображено на этом изображении. Опиши все элементы интерфейса, текст, цвета и структуру."
+        elif response_language == "en":
+            cleaned_question = "Describe in detail what is shown in this image. Describe all interface elements, text, colors and structure."
+        else:
+            cleaned_question = "Опиши подробно, что изображено на этом изображении. Опиши все элементы интерфейса, текст, цвета и структуру."
+
     if response_language == "ru":
-        prompt = f"Опиши это изображение на русском языке. {base_prompt}"
+        prompt_prefix = "Опиши это изображение на русском языке. "
     elif response_language == "en":
-        prompt = f"Describe this image in English. {base_prompt}"
+        prompt_prefix = f"Describe this image in English. "
     elif response_language == "auto":
-        prompt = base_prompt
+        prompt_prefix = ""
     else:
         # По умолчанию русский
-        prompt = f"Опиши это изображение на русском языке. {base_prompt}"
+        prompt_prefix = "Опиши это изображение на русском языке."
+
+    prompt = f"{prompt_prefix}{cleaned_question_prefix}{cleaned_question}"
 
     if document_context:
         prompt = f"{document_context}\n{prompt}"
