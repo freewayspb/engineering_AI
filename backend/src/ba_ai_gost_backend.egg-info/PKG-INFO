@@ -1,0 +1,14 @@
+Metadata-Version: 2.4
+Name: ba_ai_gost_backend
+Version: 0.1.0
+Summary: Local FastAPI backend for BA AI GOST with Ollama
+Requires-Python: >=3.9
+Requires-Dist: fastapi>=0.110
+Requires-Dist: uvicorn[standard]>=0.23
+Requires-Dist: httpx>=0.27
+Requires-Dist: pydantic>=2.6
+Requires-Dist: python-multipart>=0.0.9
+Requires-Dist: ezdxf>=1.4.2
+Provides-Extra: dev
+Requires-Dist: ruff>=0.6; extra == "dev"
+Requires-Dist: pytest>=8.0; extra == "dev"
