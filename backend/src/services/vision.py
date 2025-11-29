@@ -6,40 +6,56 @@ from .image_file_router import route_image_payload
 from .ollama_service import call_ollama
 
 
+def _sanitize_question(question: str | None) -> str:
+    return question.strip() if question else ""
+
+
+def _build_cleaned_question_prefix(cleaned_question: str, response_language: str) -> str:
+    if "самари" not in cleaned_question.lower():
+        return ""
+
+    if response_language == "ru":
+        return "Опиши подробно, что изображено на этом изображении. "
+
+    return "Describe in detail what is shown in this image. "
+
+
+def _build_cleaned_question(cleaned_question: str, response_language: str) -> str:
+    if cleaned_question:
+        return cleaned_question
+
+    if response_language == "ru":
+        return "Опиши подробно, что изображено на этом изображении. Опиши все элементы интерфейса, текст, цвета и структуру."
+
+    if response_language == "en":
+        return "Describe in detail what is shown in this image. Describe all interface elements, text, colors and structure."
+
+    return "Опиши подробно, что изображено на этом изображении. Опиши все элементы интерфейса, текст, цвета и структуру."
+
+
+def _build_prompt_prefix(response_language: str) -> str:
+    if response_language == "ru":
+        return "Опиши это изображение на русском языке. "
+
+    if response_language == "en":
+        return "Describe this image in English. "
+
+    if response_language == "auto":
+        return ""
+
+    # По умолчанию русский
+    return "Опиши это изображение на русском языке."
+
+
 async def process_vision_query(image_file: UploadFile, question: str, response_language: str = "ru") -> dict:
     routed_payload = await route_image_payload(image_file)
     encoded_images = routed_payload.images
     document_context = routed_payload.context
 
-    cleaned_question = question and question.strip() or "";
-    cleaned_question_prefix = ""
-    prompt_prefix = ""
-
-        # Заменяем старые формулировки на более понятные
-    if "самари" in cleaned_question.lower():
-        if response_language == "ru":
-            cleaned_question_prefix = "Опиши подробно, что изображено на этом изображении. "
-        else:
-            cleaned_question_prefix = "Describe in detail what is shown in this image. "
-
-
-    if not cleaned_question:
-        if response_language == "ru":
-            cleaned_question = "Опиши подробно, что изображено на этом изображении. Опиши все элементы интерфейса, текст, цвета и структуру."
-        elif response_language == "en":
-            cleaned_question = "Describe in detail what is shown in this image. Describe all interface elements, text, colors and structure."
-        else:
-            cleaned_question = "Опиши подробно, что изображено на этом изображении. Опиши все элементы интерфейса, текст, цвета и структуру."
-
-    if response_language == "ru":
-        prompt_prefix = "Опиши это изображение на русском языке. "
-    elif response_language == "en":
-        prompt_prefix = f"Describe this image in English. "
-    elif response_language == "auto":
-        prompt_prefix = ""
-    else:
-        # По умолчанию русский
-        prompt_prefix = "Опиши это изображение на русском языке."
+    sanitized_question = _sanitize_question(question)
+    cleaned_question_prefix = _build_cleaned_question_prefix(sanitized_question, response_language)
+    cleaned_question = _build_cleaned_question(sanitized_question, response_language)
+    prompt_prefix = _build_prompt_prefix(response_language)
 
     prompt = f"{prompt_prefix}{cleaned_question_prefix}{cleaned_question}"
 
