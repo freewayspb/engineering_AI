@@ -1,40 +1,15 @@
 from __future__ import annotations
 
-from pathlib import Path
 from fastapi import HTTPException, UploadFile
 
+from .image_file_router import route_image_payload
 from .ollama_service import call_ollama
-from .file_handlers.image_upload_service import convert_upload_image_to_base64
-from .file_handlers.pdf_upload_service import convert_pdf_upload_to_base64_images
 
 
 async def process_vision_query(image_file: UploadFile, question: str, response_language: str = "ru") -> dict:
-    filename = image_file.filename or ""
-    content_type = (image_file.content_type or "").lower()
-    suffix = Path(filename).suffix.lower()
-
-    is_pdf = suffix == ".pdf" or content_type == "application/pdf"
-    document_context = ""
-
-    if is_pdf:
-        pdf_payload = await convert_pdf_upload_to_base64_images(image_file)
-        encoded_images = [
-            page.get("base64")
-            for page in pdf_payload.get("images", [])
-            if page.get("base64")
-        ]
-        if not encoded_images:
-            raise HTTPException(
-                status_code=422,
-                detail="PDF-файл не содержит обрабатываемых страниц."
-            )
-        document_context = (
-            f"Источник: PDF-файл '{pdf_payload.get('source_filename', filename or 'document.pdf')}', "
-            f"страниц: {pdf_payload.get('page_count', len(encoded_images))}."
-        )
-    else:
-        encoded_image = await convert_upload_image_to_base64(image_file)
-        encoded_images = [encoded_image]
+    routed_payload = await route_image_payload(image_file)
+    encoded_images = routed_payload.images
+    document_context = routed_payload.context
 
     # Формируем промпт в зависимости от языка ответа
     # Используем вопрос пользователя, если он предоставлен, иначе используем стандартный промпт
