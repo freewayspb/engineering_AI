@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI GOST Client</title>
+    <!-- Shoelace theme and components (local, offline) -->
+    <link rel="stylesheet" href="node_modules/@shoelace-style/shoelace/cdn/themes/light.css">
+    <script>
+        window.Shoelace = { basePath: 'node_modules/@shoelace-style/shoelace/cdn' };
+    </script>
+    <script type="module" src="node_modules/@shoelace-style/shoelace/cdn/shoelace.js"></script>
+    <!-- 3rd-party styles (local) -->
+    <link rel="stylesheet" href="node_modules/gridjs/dist/theme/mermaid.min.css">
+    <link rel="stylesheet" href="node_modules/notyf/notyf.min.css">
+    <link rel="stylesheet" href="styles/variables.css">
+    <link rel="stylesheet" href="styles/layout.css">
+    <link rel="stylesheet" href="styles/components.css">
+    <link rel="stylesheet" href="styles/utilities.css">
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="header">
+                <h1>AI GOST</h1>
+                <p>Система обработки документов</p>
+            </div>
+
+            <div class="section">
+                <h3>Загрузка документов</h3>
+                <div class="file-input-area" id="fileInputArea">
+                    <div class="file-icon">📄</div>
+                    <div class="file-text">Перетащите файлы сюда</div>
+                    <div class="file-subtext">или нажмите для выбора</div>
+                </div>
+                <input id="fileHiddenInput" class="hidden" type="file" multiple accept=".pdf,.dwg,.dxf,.arp,.gsfx,.xml,.rtf,.xlsx,.docx,.jpg,.jpeg,.png,.gif,.bmp,.tiff,.ico,.webp,*/*" />
+                <div class="file-list" id="fileList"></div>
+            </div>
+
+            <div class="section">
+                <h3>Настройки</h3>
+                <div class="status-item" style="margin-bottom: 15px;">
+                    <span class="status-label">Язык ответа:</span>
+                    <select id="responseLanguage" style="width: 100%; margin-top: 5px; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; background: white;">
+                        <option value="ru" selected>Русский</option>
+                        <option value="en">English</option>
+                        <option value="auto">Автоматически</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>Вопрос к документам</h3>
+                <textarea
+                    id="questionInput"
+                    placeholder="Опишите, что нужно выяснить по загруженным документам"
+                    rows="4"
+                    style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; resize: vertical; font-size: 14px;"
+                ></textarea>
+            </div>
+
+            <div class="section">
+                <h3>Действия</h3>
+                <sl-button id="processBtn" variant="primary" disabled>Обработать документы</sl-button>
+                <sl-button id="exportBtn" variant="success" disabled>Экспорт результатов</sl-button>
+                <sl-button id="clearBtn" variant="warning">Очистить</sl-button>
+            </div>
+
+            <div class="section">
+                <h3>Статус системы</h3>
+                <div class="status-panel">
+                    <div class="status-item">
+                        <span class="status-label">Статус:</span>
+                        <span class="status-value" id="systemStatus">Готов</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">Обработано:</span>
+                        <span class="status-value" id="processedCount">0</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">Ошибок:</span>
+                        <span class="status-value" id="errorCount">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="status-panel">
+                <h3>Прогресс обработки</h3>
+                <sl-progress-bar id="progressBar" value="0"></sl-progress-bar>
+                <div id="progressText">Готов к работе</div>
+            </div>
+
+            <div id="resultsArea">
+                <h3>Результаты обработки</h3>
+                <div id="resultsContent">
+                    <p style="color: #7f8c8d; text-align: center; margin-top: 50px;">
+                        Загрузите документы для начала обработки
+                    </p>
+                </div>
+            </div>
+
+            <div class="loading hidden" id="loadingArea">
+                <sl-spinner></sl-spinner>
+                <div>Обработка документов...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- UMD bundles for local offline usage -->
+    <script src="node_modules/gridjs/dist/gridjs.umd.js"></script>
+    <script src="node_modules/notyf/notyf.min.js"></script>
+    <script src="node_modules/tippy.js/dist/tippy.umd.min.js"></script>
+    <script src="renderer.js"></script>
+</body>
+</html>

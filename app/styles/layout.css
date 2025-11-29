@@ -1,0 +1,80 @@
+/* Базовая раскладка и контейнеры */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    font-family: var(--font-sans);
+    background: var(--gradient-bg);
+    color: #333;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.container {
+    display: flex;
+    height: 100vh;
+}
+
+.sidebar {
+    width: 300px;
+    background: var(--color-surface);
+    backdrop-filter: blur(10px);
+    border-right: 1px solid var(--color-border);
+    padding: var(--space-5);
+    overflow-y: auto;
+}
+
+.main-content {
+    flex: 1;
+    padding: var(--space-5);
+    overflow-y: auto;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.header h1 {
+    color: var(--color-text-900);
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.header p {
+    color: var(--color-text-600);
+    font-size: 14px;
+}
+
+.section {
+    margin-bottom: 25px;
+}
+
+.section h3 {
+    color: var(--color-text-700);
+    font-size: 16px;
+    margin-bottom: 15px;
+    border-bottom: 2px solid var(--color-primary-500);
+    padding-bottom: 5px;
+}
+
+.status-panel {
+    background: var(--color-surface-soft);
+    border-radius: var(--radius-10);
+    padding: var(--space-5);
+    margin-bottom: var(--space-5);
+}
+
+.loading {
+    text-align: center;
+    padding: var(--space-5);
+}
+
+

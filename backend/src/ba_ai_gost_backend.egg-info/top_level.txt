@@ -1,0 +1,4 @@
+main
+ollama_client
+schemas
+services
