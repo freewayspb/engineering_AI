@@ -7,10 +7,28 @@ echo "[1/4] Pull base model: ${BASE_MODEL}"
 ollama pull "${BASE_MODEL}" || true
 
 echo "[2/4] Pull deepseek-r1 model (for JSON queries)"
-ollama pull "deepseek-r1" || true
+if ollama pull "deepseek-r1" 2>/dev/null; then
+    echo "  ✓ deepseek-r1 installed"
+elif ollama pull "deepseek-r1:8b" 2>/dev/null; then
+    echo "  ✓ deepseek-r1:8b installed, creating alias 'deepseek-r1'"
+    # Создаем алиас для совместимости с кодом
+    echo "FROM deepseek-r1:8b" | ollama create deepseek-r1 -f - 2>/dev/null || echo "  ⚠ Alias creation skipped (may already exist)"
+else
+    echo "  ⚠ Warning: deepseek-r1 model not found. Trying alternative..."
+    if ollama pull "deepseek-r1:1.5b" 2>/dev/null; then
+        echo "  ✓ deepseek-r1:1.5b installed, creating alias 'deepseek-r1'"
+        echo "FROM deepseek-r1:1.5b" | ollama create deepseek-r1 -f - 2>/dev/null || echo "  ⚠ Alias creation skipped"
+    else
+        echo "  ✗ Failed to install deepseek-r1"
+    fi
+fi
 
 echo "[3/4] Pull llava model (for vision queries)"
-ollama pull "llava" || true
+if ollama pull "llava" 2>/dev/null; then
+    echo "  ✓ llava installed"
+else
+    echo "  ⚠ Warning: llava model installation failed"
+fi
 
 ROOT_DIR=$(cd "$(dirname "$0")/.." && pwd)
 
