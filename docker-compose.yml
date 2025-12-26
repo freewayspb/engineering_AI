@@ -5,6 +5,11 @@ services:
     volumes:
       - ollama:/root/.ollama
       - ./ollama:/opt/ollama:ro
+    environment:
+      - OLLAMA_NUM_GPU=${OLLAMA_NUM_GPU:-1}
+      - OLLAMA_GPU_LAYERS=${OLLAMA_GPU_LAYERS:-35}
+      - NVIDIA_VISIBLE_DEVICES=${NVIDIA_VISIBLE_DEVICES:-all}
+    runtime: nvidia
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "ollama", "list"]
@@ -34,11 +39,15 @@ services:
     depends_on:
       - ollama
     environment:
+      - OLLAMA_NUM_GPU=${OLLAMA_NUM_GPU:-1}
+      - OLLAMA_GPU_LAYERS=${OLLAMA_GPU_LAYERS:-35}
       - OLLAMA_HOST=http://ollama:11434
       - BASE_MODEL=${BASE_MODEL:-llama3.1:8b}
+      - NVIDIA_VISIBLE_DEVICES=${NVIDIA_VISIBLE_DEVICES:-all}
     volumes:
       - ollama:/root/.ollama
       - ./ollama:/opt/ollama:ro
+    runtime: nvidia
     entrypoint: ["/bin/bash", "-lc", "chmod +x /opt/ollama/scripts/create_models.sh && BASE_MODEL=$BASE_MODEL bash /opt/ollama/scripts/create_models.sh"]
     restart: "no"
 
