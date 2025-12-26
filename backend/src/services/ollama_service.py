@@ -12,7 +12,7 @@ OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
 async def call_ollama(endpoint: str, payload: dict) -> dict:
     url = f"{OLLAMA_BASE_URL.rstrip('/')}/{endpoint.lstrip('/')}"
 
-    async with httpx.AsyncClient(timeout=httpx.Timeout(300.0)) as client:
+    async with httpx.AsyncClient(timeout=httpx.Timeout(1800.0)) as client:
         try:
             response = await client.post(url, json=payload)
         except httpx.ConnectError as exc:
@@ -23,7 +23,7 @@ async def call_ollama(endpoint: str, payload: dict) -> dict:
         except httpx.TimeoutException as exc:
             raise HTTPException(
                 status_code=504,
-                detail="Превышено время ожидания ответа от Ollama (5 минут). Модель обрабатывает запрос слишком долго. Попробуйте уменьшить размер файла или упростить вопрос."
+                detail="Превышено время ожидания ответа от Ollama (30 минут). Модель обрабатывает запрос слишком долго. Попробуйте уменьшить размер файла или упростить вопрос."
             ) from exc
         except httpx.RequestError as exc:
             raise HTTPException(

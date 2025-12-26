@@ -452,7 +452,7 @@ class ChatMessage(BaseModel):
 
 #### 5.1.5 Ollama Service (`services/ollama_service.py`)
 - **Function**: `call_ollama(endpoint, payload)`
-- **Timeout**: 300 секунд (5 минут)
+- **Timeout**: 1800 секунд (30 минут)
 - **Error Handling**: HTTPException с соответствующими кодами
 
 ### 5.2 Client Components
