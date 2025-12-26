@@ -5,11 +5,26 @@ services:
     volumes:
       - ollama:/root/.ollama
       - ./ollama:/opt/ollama:ro
+    # Оптимизация производительности Ollama:
+    # - OLLAMA_KEEP_ALIVE: время хранения модели в памяти (24h = не выгружать)
+    # - OLLAMA_NUM_PARALLEL: количество параллельных запросов
+    # - OLLAMA_MAX_LOADED_MODELS: максимум моделей в памяти одновременно
     environment:
       - OLLAMA_NUM_GPU=${OLLAMA_NUM_GPU:-1}
       - OLLAMA_GPU_LAYERS=${OLLAMA_GPU_LAYERS:-35}
       - NVIDIA_VISIBLE_DEVICES=${NVIDIA_VISIBLE_DEVICES:-all}
+      - OLLAMA_KEEP_ALIVE=24h
+      - OLLAMA_NUM_PARALLEL=4
+      - OLLAMA_MAX_LOADED_MODELS=2
     runtime: nvidia
+    shm_size: '2gb'  # Shared memory для больших моделей (важно для производительности)
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all  # Использовать все доступные GPU
+              capabilities: [gpu]
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "ollama", "list"]
@@ -48,6 +63,14 @@ services:
       - ollama:/root/.ollama
       - ./ollama:/opt/ollama:ro
     runtime: nvidia
+    shm_size: '2gb'  # Shared memory для больших моделей
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all  # Использовать все доступные GPU
+              capabilities: [gpu]
     entrypoint: ["/bin/bash", "-lc", "BASE_MODEL=$BASE_MODEL bash /opt/ollama/scripts/create_models.sh"]
     restart: "no"
 
