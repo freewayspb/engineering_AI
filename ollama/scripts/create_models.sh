@@ -3,8 +3,14 @@ set -euo pipefail
 
 BASE_MODEL=${BASE_MODEL:-"llama3.1:8b"}
 
-echo "[1/3] Pull base model: ${BASE_MODEL}"
+echo "[1/4] Pull base model: ${BASE_MODEL}"
 ollama pull "${BASE_MODEL}" || true
+
+echo "[2/4] Pull deepseek-r1 model (for JSON queries)"
+ollama pull "deepseek-r1" || true
+
+echo "[3/4] Pull llava model (for vision queries)"
+ollama pull "llava" || true
 
 ROOT_DIR=$(cd "$(dirname "$0")/.." && pwd)
 
@@ -18,7 +24,7 @@ gen_and_create() {
   cat "$system_file" >> "$temp"
   echo "\"\"\"" >> "$temp"
   echo "PARAMETER temperature ${temperature}" >> "$temp"
-  echo "[2/3] Create model ${name} (temp modelfile: $temp)"
+      echo "Creating model ${name} (temp modelfile: $temp)"
   ollama create "$name" -f "$temp" || true
   rm -f "$temp"
 }
@@ -27,6 +33,12 @@ gen_and_create agent-classify    "${ROOT_DIR}/prompts/classify.system"     0.2
 gen_and_create agent-doc-extract "${ROOT_DIR}/prompts/doc_extract.system"  0.1
 gen_and_create agent-qa          "${ROOT_DIR}/prompts/qa.system"           0.3
 
-echo "[3/3] Done. Models: agent-classify, agent-doc-extract, agent-qa"
+echo "Done. Models installed:"
+echo "  - Base: ${BASE_MODEL}"
+echo "  - deepseek-r1 (for JSON queries)"
+echo "  - llava (for vision queries)"
+echo "  - agent-classify"
+echo "  - agent-doc-extract"
+echo "  - agent-qa"
 
 

@@ -9,7 +9,20 @@ class BA_AI_GOST_Client {
         this.maxFileSizeBytes = 50 * 1024 * 1024; // 50 MB
         this.allowedExtensions = ['pdf','dwg','dxf','arp','gsfx','xml','rtf','xlsx','docx', 'jpg', 'jpeg', 'png', 'gif', 'bmp', 'tiff', 'ico', 'webp'];
         // Frontend → Backend API (не напрямую в Ollama!)
-        this.backendUrl = 'http://localhost:8080';
+        // URL backend можно настроить через window.BACKEND_URL или использовать значение по умолчанию
+        let rawUrl = (typeof window !== 'undefined' && window.BACKEND_URL) || 
+                     localStorage.getItem('backendUrl') || 
+                     'http://195.209.210.16:8080';
+        
+        // Нормализуем URL: добавляем протокол, если не указан
+        if (rawUrl && !rawUrl.match(/^https?:\/\//i)) {
+            rawUrl = 'http://' + rawUrl;
+        }
+        // Убираем завершающий слэш
+        this.backendUrl = rawUrl.replace(/\/$/, '');
+        
+        // Логируем используемый URL для отладки
+        console.log('Backend URL:', this.backendUrl);
         this.responseLanguage = 'ru'; // Язык ответа по умолчанию
         this.notifier = typeof Notyf !== 'undefined' ? new Notyf({
             duration: 2500,
@@ -46,6 +59,9 @@ class BA_AI_GOST_Client {
         
         // Элемент выбора языка
         this.responseLanguageSelect = document.getElementById('responseLanguage');
+        
+        // Элемент настройки backend URL
+        this.backendUrlInput = document.getElementById('backendUrl');
     }
 
     async pingBackend() {
@@ -122,6 +138,32 @@ class BA_AI_GOST_Client {
         } else {
             console.warn('Элемент responseLanguageSelect не найден, используем значение по умолчанию: ru');
             this.responseLanguage = 'ru';
+        }
+
+        // Обработка изменения backend URL
+        if (this.backendUrlInput) {
+            // Инициализируем значение из localStorage или текущего значения
+            this.backendUrlInput.value = this.backendUrl;
+            
+            // Обработчик изменения URL
+            this.backendUrlInput.addEventListener('change', (e) => {
+                const newUrl = e.target.value.trim();
+                if (newUrl) {
+                    // Нормализуем URL: добавляем протокол, если не указан
+                    let normalizedUrl = newUrl;
+                    if (!normalizedUrl.match(/^https?:\/\//i)) {
+                        normalizedUrl = 'http://' + normalizedUrl;
+                    }
+                    // Убираем завершающий слэш, если есть
+                    normalizedUrl = normalizedUrl.replace(/\/$/, '');
+                    this.backendUrl = normalizedUrl;
+                    localStorage.setItem('backendUrl', this.backendUrl);
+                    this.backendUrlInput.value = this.backendUrl;
+                    console.log('Backend URL изменен на:', this.backendUrl);
+                    this.showSuccess('URL сохранен. Переподключение...');
+                    this.pingBackend();
+                }
+            });
         }
 
         // Слушатель событий от основного процесса
@@ -315,7 +357,7 @@ class BA_AI_GOST_Client {
         try {
             const connected = await this.pingBackend();
             if (!connected) {
-                throw new Error('Backend недоступен. Проверьте, что сервер запущен на http://localhost:8080');
+                throw new Error(`Backend недоступен. Проверьте, что сервер запущен на ${this.backendUrl}`);
             }
 
             const prompt = this.buildProcessingPrompt(file.name, userQuestion);
@@ -393,7 +435,7 @@ class BA_AI_GOST_Client {
                 throw new Error('Превышено время ожидания ответа от сервера (6 минут). Возможно, модель обрабатывает слишком большой файл.');
             }
             if (e.name === 'TypeError' && e.message.includes('fetch')) {
-                throw new Error('Не удалось подключиться к серверу. Проверьте, что бэкенд запущен на http://localhost:8080');
+                throw new Error(`Не удалось подключиться к серверу. Проверьте, что бэкенд запущен на ${this.backendUrl}`);
             }
             throw new Error(`Ошибка сети: ${e.message}`);
         }

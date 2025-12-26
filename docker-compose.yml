@@ -48,7 +48,7 @@ services:
       - ollama:/root/.ollama
       - ./ollama:/opt/ollama:ro
     runtime: nvidia
-    entrypoint: ["/bin/bash", "-lc", "chmod +x /opt/ollama/scripts/create_models.sh && BASE_MODEL=$BASE_MODEL bash /opt/ollama/scripts/create_models.sh"]
+    entrypoint: ["/bin/bash", "-lc", "BASE_MODEL=$BASE_MODEL bash /opt/ollama/scripts/create_models.sh"]
     restart: "no"
 
 volumes:

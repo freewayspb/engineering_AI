@@ -4,15 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI GOST Client</title>
-    <!-- Shoelace theme and components (local, offline) -->
-    <link rel="stylesheet" href="node_modules/@shoelace-style/shoelace/cdn/themes/light.css">
+    <!-- Shoelace theme and components (CDN) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.1/cdn/themes/light.css">
     <script>
-        window.Shoelace = { basePath: 'node_modules/@shoelace-style/shoelace/cdn' };
+        window.Shoelace = { basePath: 'https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.1/cdn' };
     </script>
-    <script type="module" src="node_modules/@shoelace-style/shoelace/cdn/shoelace.js"></script>
-    <!-- 3rd-party styles (local) -->
-    <link rel="stylesheet" href="node_modules/gridjs/dist/theme/mermaid.min.css">
-    <link rel="stylesheet" href="node_modules/notyf/notyf.min.css">
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.1/cdn/shoelace.js"></script>
+    <!-- 3rd-party styles (CDN) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gridjs@6.1.0/dist/theme/mermaid.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3.10.0/notyf.min.css">
     <link rel="stylesheet" href="styles/variables.css">
     <link rel="stylesheet" href="styles/layout.css">
     <link rel="stylesheet" href="styles/components.css">
@@ -39,6 +39,10 @@
 
             <div class="section">
                 <h3>Настройки</h3>
+                <div class="status-item" style="margin-bottom: 15px;">
+                    <span class="status-label">Backend URL:</span>
+                    <input type="text" id="backendUrl" placeholder="http://195.209.210.16:8080" style="width: 100%; margin-top: 5px; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; background: white; font-family: monospace;">
+                </div>
                 <div class="status-item" style="margin-bottom: 15px;">
                     <span class="status-label">Язык ответа:</span>
                     <select id="responseLanguage" style="width: 100%; margin-top: 5px; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; background: white;">
@@ -108,10 +112,10 @@
         </div>
     </div>
 
-    <!-- UMD bundles for local offline usage -->
-    <script src="node_modules/gridjs/dist/gridjs.umd.js"></script>
-    <script src="node_modules/notyf/notyf.min.js"></script>
-    <script src="node_modules/tippy.js/dist/tippy.umd.min.js"></script>
+    <!-- UMD bundles (CDN) -->
+    <script src="https://cdn.jsdelivr.net/npm/gridjs@6.1.0/dist/gridjs.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/notyf@3.10.0/notyf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tippy.js@6.3.7/dist/tippy.umd.min.js"></script>
     <script src="renderer.js"></script>
 </body>
 </html>

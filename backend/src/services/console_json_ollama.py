@@ -19,7 +19,7 @@ async def run_console_json_ollama(
     instruction: str | None = None,
     original_filename: str | None = None,
 ) -> dict:
-    """Run the DeepSeek model via the Ollama HTTP API using JSON/file context."""
+    """Run the deepseek-r1 model via the Ollama HTTP API using JSON/file context."""
 
     path = Path(file_path).expanduser().resolve()
     if not path.is_file():
@@ -71,7 +71,7 @@ async def run_console_json_ollama(
         elif "model" in error_msg.lower() and "not found" in error_msg.lower():
             raise HTTPException(
                 status_code=404,
-                detail=f"Модель 'deepseek-r1' не найдена в Ollama. Установите модель командой: ollama pull deepseek-r1"
+                detail=f"Модель 'deepseek-r1' не найдена в Ollama. Установите модель через docker-compose run --rm ollama-init"
             ) from exc
         else:
             raise HTTPException(
