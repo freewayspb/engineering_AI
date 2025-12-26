@@ -1,7 +1,6 @@
 """FastAPI backend для BA_AI_GOST с локальной Ollama."""
 from __future__ import annotations
 
-from typing import List
 import os
 import uvicorn
 from fastapi import FastAPI, HTTPException, File, Form, UploadFile
@@ -25,7 +24,9 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
-)# ollama = OllamaClient(base_url=OLLAMA_BASE_URL)
+)
+
+ollama = OllamaClient(base_url=OLLAMA_BASE_URL)
 
 
 @app.post("/vision-query")
