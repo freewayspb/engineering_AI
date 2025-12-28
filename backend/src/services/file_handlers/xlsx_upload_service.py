@@ -30,10 +30,18 @@ from fastapi import HTTPException, UploadFile
 
 try:
     from openpyxl.utils.exceptions import InvalidFileException  # type: ignore[import-untyped]
+    from openpyxl.utils.exceptions import ReadOnlyWorkbookException  # type: ignore[import-untyped]
 except ImportError as exc:
     raise ImportError(
         "openpyxl is required but not installed. Install it with: pip install openpyxl>=3.0.0"
     ) from exc
+
+try:
+    from pandas.errors import EmptyDataError  # type: ignore[import-untyped]
+except ImportError:
+    # Для старых версий pandas создаем фиктивный класс
+    class EmptyDataError(Exception):  # type: ignore[misc]
+        pass
 
 from zipfile import BadZipFile
 
@@ -184,12 +192,20 @@ def convert_xlsx_to_json(
     if not xlsx_path.exists():
         raise FileNotFoundError(f"Not found: {xlsx_path}")
 
-    sheets = pd.read_excel(
-        xlsx_path,
-        sheet_name=None if sheet is None else sheet,
-        dtype=object,
-        engine="openpyxl",
-    )
+    try:
+        sheets = pd.read_excel(
+            xlsx_path,
+            sheet_name=None if sheet is None else sheet,
+            dtype=object,
+            engine="openpyxl",
+        )
+    except Exception as exc:
+        # Перехватываем ошибки чтения и добавляем контекст
+        error_type = type(exc).__name__
+        error_msg = str(exc)
+        raise ValueError(
+            f"Ошибка чтения Excel файла ({error_type}): {error_msg}"
+        ) from exc
 
     if isinstance(sheets, pd.DataFrame):
         sheets = {sheet or "Sheet1": sheets}
@@ -199,14 +215,22 @@ def convert_xlsx_to_json(
         if df.empty:
             result[name] = []
             continue
-        norm = normalize_dataframe(
-            df,
-            header_row=header_row,
-            ffill_merged=ffill_merged,
-            drop_empty_rows=drop_empty_rows,
-            drop_empty_cols=drop_empty_cols,
-        )
-        result[name] = dataframe_to_records(norm)
+        try:
+            norm = normalize_dataframe(
+                df,
+                header_row=header_row,
+                ffill_merged=ffill_merged,
+                drop_empty_rows=drop_empty_rows,
+                drop_empty_cols=drop_empty_cols,
+            )
+            result[name] = dataframe_to_records(norm)
+        except Exception as exc:
+            # Добавляем информацию о листе в ошибку
+            error_type = type(exc).__name__
+            error_msg = str(exc)
+            raise ValueError(
+                f"Ошибка обработки листа '{name}' ({error_type}): {error_msg}"
+            ) from exc
     return result
 
 
@@ -260,6 +284,16 @@ async def convert_xlsx_upload_to_json(
             status_code=422,
             detail=f"Файл '{filename}' не является валидным Excel-файлом: {str(exc)}"
         ) from exc
+    except ReadOnlyWorkbookException as exc:
+        raise HTTPException(
+            status_code=422,
+            detail=f"Файл '{filename}' открыт только для чтения или защищен от записи: {str(exc)}"
+        ) from exc
+    except EmptyDataError as exc:
+        raise HTTPException(
+            status_code=422,
+            detail=f"Файл '{filename}' не содержит данных или все листы пусты."
+        ) from exc
     except (ValueError, ParserError) as exc:
         error_msg = str(exc) or "Не удалось обработать XLSX-файл."
         raise HTTPException(
@@ -276,15 +310,29 @@ async def convert_xlsx_upload_to_json(
             status_code=500,
             detail=f"Ошибка импорта модуля: {str(exc)}"
         ) from exc
+    except (IndexError, KeyError) as exc:
+        error_msg = str(exc) or "Ошибка доступа к данным"
+        raise HTTPException(
+            status_code=422,
+            detail=f"Ошибка структуры XLSX-файла '{filename}': {error_msg}. Проверьте наличие листов и корректность структуры данных."
+        ) from exc
+    except OSError as exc:
+        error_msg = str(exc) or "Ошибка файловой системы"
+        raise HTTPException(
+            status_code=500,
+            detail=f"Ошибка при чтении XLSX-файла '{filename}': {error_msg}"
+        ) from exc
     except Exception as exc:  # pragma: no cover - защита от непредвиденных ошибок
         error_type = type(exc).__name__
         error_msg = str(exc) or "Неизвестная ошибка"
         import logging
         logger = logging.getLogger(__name__)
         logger.error("XLSX conversion error: %s: %s", error_type, error_msg, exc_info=True)
+        # Включаем детали ошибки в сообщение для отладки
+        detail_msg = f"Неожиданная ошибка при обработке XLSX-файла '{filename}' ({error_type}): {error_msg}"
         raise HTTPException(
             status_code=500,
-            detail=f"Неожиданная ошибка при обработке XLSX-файла '{filename}' ({error_type}): {error_msg}"
+            detail=detail_msg
         ) from exc
     finally:
         tmp_path.unlink(missing_ok=True)
