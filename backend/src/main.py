@@ -14,14 +14,23 @@ from .schemas import GenerateRequest, ChatRequest
 from .services import process_json_query, process_vision_query
 
 # Настройка логирования
+# Используем простой формат для лучшей читаемости
 logging.basicConfig(
     level=logging.INFO,
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    format="%(levelname)s: %(message)s",
     force=True,  # Переопределяем существующую конфигурацию
+    handlers=[
+        logging.StreamHandler(),  # Вывод в stdout/stderr
+    ]
 )
 logger = logging.getLogger(__name__)
 # Устанавливаем уровень логирования для всех наших модулей
 logging.getLogger("src").setLevel(logging.INFO)
+logging.getLogger("src.services").setLevel(logging.INFO)
+logging.getLogger("src.services.file_handlers").setLevel(logging.INFO)
+
+# Принудительно выводим тестовое сообщение
+logger.info("=== LOGGING CONFIGURED ===")
 
 API_HOST = os.getenv("API_HOST", "0.0.0.0")
 API_PORT = int(os.getenv("API_PORT", "8080"))
@@ -33,19 +42,25 @@ app = FastAPI(title="BA_AI_GOST Backend", version="1.0.0")
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
     """Логирование всех HTTP запросов."""
-    logger.info("Request: %s %s", request.method, request.url.path)
+    path = request.url.path
+    method = request.method
+    logger.info(">>> MIDDLEWARE START: %s %s", method, path)
+    
     try:
         response = await call_next(request)
-        logger.info("Response: %s %s - %s", request.method, request.url.path, response.status_code)
+        logger.info(">>> MIDDLEWARE SUCCESS: %s %s - %s", method, path, response.status_code)
         return response
     except HTTPException as exc:
         # HTTPException логируем отдельно, но не перехватываем
-        logger.warning("HTTPException in %s %s: %s - %s", request.method, request.url.path, exc.status_code, exc.detail)
+        logger.error(">>> MIDDLEWARE HTTPException: %s %s - status=%d, detail=%s", 
+                    method, path, exc.status_code, exc.detail)
         raise
     except Exception as exc:
         # Логируем все необработанные исключения с полным traceback
-        logger.error("Unhandled exception in request %s %s: %s: %s", 
-                    request.method, request.url.path, type(exc).__name__, str(exc), exc_info=True)
+        error_type = type(exc).__name__
+        error_msg = str(exc)
+        logger.error(">>> MIDDLEWARE EXCEPTION: %s %s - type=%s, msg=%s", 
+                    method, path, error_type, error_msg, exc_info=True)
         raise
 
 # Глобальный обработчик исключений (только для необработанных исключений)
