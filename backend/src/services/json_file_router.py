@@ -121,17 +121,20 @@ async def load_raw_json_data(json_file: UploadFile) -> RoutedJsonPayload:
         )
 
     try:
-        logger.debug("Calling handler for file: %s", filename)
+        logger.info("=== ROUTER: Calling handler for file: %s ===", filename)
         converted_payload = await handler_config.handler(json_file)
-        logger.debug("Handler completed for file: %s, payload keys: %s", filename, list(converted_payload.keys()) if isinstance(converted_payload, dict) else "N/A")
+        logger.info("=== ROUTER: Handler completed for file: %s ===", filename)
         serialized_json = json.dumps(converted_payload, indent=2, ensure_ascii=False)
         logger.debug("JSON serialized, length: %d", len(serialized_json))
-    except HTTPException:
+    except HTTPException as exc:
+        logger.error("=== ROUTER: HTTPException for file %s: status=%d, detail=%s ===", 
+                    filename, exc.status_code, exc.detail)
         raise
     except Exception as exc:
         error_type = type(exc).__name__
         error_msg = str(exc)
-        logger.error("Error in handler for file %s: %s: %s", filename, error_type, error_msg, exc_info=True)
+        logger.error("=== ROUTER: Exception in handler for file %s: %s: %s ===", 
+                    filename, error_type, error_msg, exc_info=True)
         raise HTTPException(
             status_code=500,
             detail=f"Ошибка обработки файла '{filename}' ({error_type}): {error_msg}"

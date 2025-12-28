@@ -44,8 +44,11 @@ except ImportError:
         pass
 
 from zipfile import BadZipFile
+import logging
 
 from ..utils.compat_asyncio import to_thread
+
+logger = logging.getLogger(__name__)
 
 
 EU_DECIMAL_RE = re.compile(
@@ -250,6 +253,7 @@ async def convert_xlsx_upload_to_json(
         raise HTTPException(status_code=400, detail="Файл XLSX обязателен для загрузки.")
 
     filename = xlsx_file.filename or "uploaded.xlsx"
+    logger.info("=== XLSX START === file=%s", filename)
     suffix = Path(filename).suffix or ".xlsx"
 
     payload = await xlsx_file.read()
@@ -325,11 +329,10 @@ async def convert_xlsx_upload_to_json(
     except Exception as exc:  # pragma: no cover - защита от непредвиденных ошибок
         error_type = type(exc).__name__
         error_msg = str(exc) or "Неизвестная ошибка"
-        import logging
-        logger = logging.getLogger(__name__)
-        logger.error("XLSX conversion error: %s: %s", error_type, error_msg, exc_info=True)
+        logger.error("=== XLSX ERROR === file=%s, type=%s, msg=%s", filename, error_type, error_msg, exc_info=True)
         # Включаем детали ошибки в сообщение для отладки
         detail_msg = f"Неожиданная ошибка при обработке XLSX-файла '{filename}' ({error_type}): {error_msg}"
+        logger.error("=== XLSX ERROR DETAIL === %s", detail_msg)
         raise HTTPException(
             status_code=500,
             detail=detail_msg
