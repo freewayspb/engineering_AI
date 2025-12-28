@@ -35,8 +35,14 @@ async def log_requests(request: Request, call_next):
         response = await call_next(request)
         logger.info("Response: %s %s - %s", request.method, request.url.path, response.status_code)
         return response
+    except HTTPException as exc:
+        # HTTPException логируем отдельно, но не перехватываем
+        logger.warning("HTTPException in %s %s: %s - %s", request.method, request.url.path, exc.status_code, exc.detail)
+        raise
     except Exception as exc:
-        logger.error("Exception in request %s %s: %s", request.method, request.url.path, exc, exc_info=True)
+        # Логируем все необработанные исключения с полным traceback
+        logger.error("Unhandled exception in request %s %s: %s: %s", 
+                    request.method, request.url.path, type(exc).__name__, str(exc), exc_info=True)
         raise
 
 # Глобальный обработчик исключений (только для необработанных исключений)
@@ -88,7 +94,19 @@ async def json_query(
     question: str = Form(..., description="Question to ask the deepseek-r1 model"),
     response_language: str = Form("ru", description="Language for the response (ru, en, auto)"),
 ):
-    return await process_json_query(json_file, question, response_language)
+    """Обработка JSON запроса с файлом."""
+    try:
+        return await process_json_query(json_file, question, response_language)
+    except HTTPException:
+        # Пробрасываем HTTPException как есть
+        raise
+    except Exception as exc:
+        # Логируем все необработанные исключения на уровне эндпоинта
+        logger.error("Unhandled exception in /json-query: %s: %s", type(exc).__name__, str(exc), exc_info=True)
+        raise HTTPException(
+            status_code=500,
+            detail=f"Внутренняя ошибка при обработке запроса: {str(exc)}"
+        ) from exc
 
 
 @app.get("/")
