@@ -1,0 +1,55 @@
+# Docker Compose конфигурация БЕЗ GPU (для тестирования или если GPU недоступен)
+# Использование: docker-compose -f docker-compose.no-gpu.yml up -d
+
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    volumes:
+      - ollama:/root/.ollama
+      - ./ollama:/opt/ollama:ro
+    environment:
+      - OLLAMA_NUM_GPU=0
+      - OLLAMA_GPU_LAYERS=0
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: ba-ai-gost-backend
+    environment:
+      - OLLAMA_BASE_URL=http://ollama:11434
+      - API_HOST=0.0.0.0
+      - API_PORT=8080
+    depends_on:
+      ollama:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+
+  ollama-init:
+    image: ollama/ollama:latest
+    container_name: ollama-init
+    depends_on:
+      - ollama
+    environment:
+      - OLLAMA_NUM_GPU=0
+      - OLLAMA_GPU_LAYERS=0
+      - OLLAMA_HOST=http://ollama:11434
+      - BASE_MODEL=${BASE_MODEL:-llama3.1:8b}
+    volumes:
+      - ollama:/root/.ollama
+      - ./ollama:/opt/ollama:ro
+    entrypoint: ["/bin/bash", "-lc", "BASE_MODEL=$BASE_MODEL bash /opt/ollama/scripts/create_models.sh"]
+    restart: "no"
+
+volumes:
+  ollama:
+

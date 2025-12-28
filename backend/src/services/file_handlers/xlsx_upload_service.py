@@ -12,9 +12,30 @@ import tempfile
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
-import pandas as pd
-from dateutil.parser import ParserError
+try:
+    import pandas as pd  # type: ignore[import-untyped]
+except ImportError as exc:
+    raise ImportError(
+        "pandas is required but not installed. Install it with: pip install pandas>=2.0.0"
+    ) from exc
+
+try:
+    from dateutil.parser import ParserError  # type: ignore[import-untyped]
+except ImportError as exc:
+    raise ImportError(
+        "python-dateutil is required but not installed. Install it with: pip install python-dateutil>=2.8.0"
+    ) from exc
+
 from fastapi import HTTPException, UploadFile
+
+try:
+    from openpyxl.utils.exceptions import InvalidFileException  # type: ignore[import-untyped]
+except ImportError as exc:
+    raise ImportError(
+        "openpyxl is required but not installed. Install it with: pip install openpyxl>=3.0.0"
+    ) from exc
+
+from zipfile import BadZipFile
 
 from ..utils.compat_asyncio import to_thread
 
@@ -212,8 +233,9 @@ async def convert_xlsx_upload_to_json(
     if not payload:
         raise HTTPException(status_code=400, detail="Загруженный XLSX-файл пуст.")
 
-    with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp_file:
+    with tempfile.NamedTemporaryFile(delete=False, suffix=suffix, mode='wb') as tmp_file:
         tmp_file.write(payload)
+        tmp_file.flush()  # Убеждаемся, что данные записаны на диск
         tmp_path = Path(tmp_file.name)
 
     try:
@@ -228,13 +250,42 @@ async def convert_xlsx_upload_to_json(
         )
     except FileNotFoundError as exc:
         raise HTTPException(status_code=500, detail="Временный XLSX-файл не найден.") from exc
-    except (ValueError, ParserError) as exc:
+    except BadZipFile as exc:
         raise HTTPException(
             status_code=422,
-            detail=str(exc) or "Не удалось обработать XLSX-файл.",
+            detail=f"Файл '{filename}' не является валидным XLSX-файлом (поврежденный ZIP-архив)."
+        ) from exc
+    except InvalidFileException as exc:
+        raise HTTPException(
+            status_code=422,
+            detail=f"Файл '{filename}' не является валидным Excel-файлом: {str(exc)}"
+        ) from exc
+    except (ValueError, ParserError) as exc:
+        error_msg = str(exc) or "Не удалось обработать XLSX-файл."
+        raise HTTPException(
+            status_code=422,
+            detail=f"Ошибка обработки XLSX-файла '{filename}': {error_msg}",
+        ) from exc
+    except ImportError as exc:
+        if "openpyxl" in str(exc).lower():
+            raise HTTPException(
+                status_code=500,
+                detail="Модуль openpyxl не установлен. Установите его командой: pip install openpyxl"
+            ) from exc
+        raise HTTPException(
+            status_code=500,
+            detail=f"Ошибка импорта модуля: {str(exc)}"
         ) from exc
     except Exception as exc:  # pragma: no cover - защита от непредвиденных ошибок
-        raise HTTPException(status_code=500, detail="Неожиданная ошибка при обработке XLSX.") from exc
+        error_type = type(exc).__name__
+        error_msg = str(exc) or "Неизвестная ошибка"
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.error("XLSX conversion error: %s: %s", error_type, error_msg, exc_info=True)
+        raise HTTPException(
+            status_code=500,
+            detail=f"Неожиданная ошибка при обработке XLSX-файла '{filename}' ({error_type}): {error_msg}"
+        ) from exc
     finally:
         tmp_path.unlink(missing_ok=True)
 
