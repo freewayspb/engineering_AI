@@ -17,8 +17,11 @@ from .services import process_json_query, process_vision_query
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    force=True,  # Переопределяем существующую конфигурацию
 )
 logger = logging.getLogger(__name__)
+# Устанавливаем уровень логирования для всех наших модулей
+logging.getLogger("src").setLevel(logging.INFO)
 
 API_HOST = os.getenv("API_HOST", "0.0.0.0")
 API_PORT = int(os.getenv("API_PORT", "8080"))
@@ -95,17 +98,27 @@ async def json_query(
     response_language: str = Form("ru", description="Language for the response (ru, en, auto)"),
 ):
     """Обработка JSON запроса с файлом."""
+    filename = json_file.filename if json_file else "unknown"
+    logger.info("=== JSON-QUERY START: file=%s, question_len=%d ===", filename, len(question) if question else 0)
+    
     try:
-        return await process_json_query(json_file, question, response_language)
-    except HTTPException:
-        # Пробрасываем HTTPException как есть
+        result = await process_json_query(json_file, question, response_language)
+        logger.info("=== JSON-QUERY SUCCESS: file=%s ===", filename)
+        return result
+    except HTTPException as exc:
+        # Логируем HTTPException для отладки
+        logger.warning("=== JSON-QUERY HTTPException: file=%s, status=%d, detail=%s ===", 
+                     filename, exc.status_code, exc.detail)
         raise
     except Exception as exc:
         # Логируем все необработанные исключения на уровне эндпоинта
-        logger.error("Unhandled exception in /json-query: %s: %s", type(exc).__name__, str(exc), exc_info=True)
+        error_type = type(exc).__name__
+        error_msg = str(exc)
+        logger.error("=== JSON-QUERY ERROR: file=%s, type=%s, msg=%s ===", 
+                    filename, error_type, error_msg, exc_info=True)
         raise HTTPException(
             status_code=500,
-            detail=f"Внутренняя ошибка при обработке запроса: {str(exc)}"
+            detail=f"Внутренняя ошибка при обработке запроса: {error_msg}"
         ) from exc
 
 
