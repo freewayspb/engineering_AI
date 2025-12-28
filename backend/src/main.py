@@ -1,21 +1,65 @@
 """FastAPI backend для BA_AI_GOST с локальной Ollama."""
 from __future__ import annotations
 
+import logging
 import os
 import uvicorn
-from fastapi import FastAPI, HTTPException, File, Form, UploadFile
+from fastapi import FastAPI, HTTPException, File, Form, UploadFile, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from .ollama_client import OllamaClient
 from .schemas import GenerateRequest, ChatRequest
 
 
 from .services import process_json_query, process_vision_query
 
+# Настройка логирования
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+)
+logger = logging.getLogger(__name__)
+
 API_HOST = os.getenv("API_HOST", "0.0.0.0")
 API_PORT = int(os.getenv("API_PORT", "8080"))
 OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
 
 app = FastAPI(title="BA_AI_GOST Backend", version="1.0.0")
+
+# Middleware для логирования запросов
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    """Логирование всех HTTP запросов."""
+    logger.info("Request: %s %s", request.method, request.url.path)
+    try:
+        response = await call_next(request)
+        logger.info("Response: %s %s - %s", request.method, request.url.path, response.status_code)
+        return response
+    except Exception as exc:
+        logger.error("Exception in request %s %s: %s", request.method, request.url.path, exc, exc_info=True)
+        raise
+
+# Глобальный обработчик исключений (только для необработанных исключений)
+# HTTPException обрабатываются FastAPI автоматически, поэтому не регистрируем обработчик для них
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    """Обработчик всех необработанных исключений (кроме HTTPException)."""
+    # HTTPException обрабатываются FastAPI автоматически, пропускаем их
+    if isinstance(exc, HTTPException):
+        # Пробрасываем HTTPException дальше для обработки FastAPI
+        raise exc
+    
+    logger.error("Unhandled exception: %s", exc, exc_info=True, extra={
+        "path": request.url.path,
+        "method": request.method,
+    })
+    return JSONResponse(
+        status_code=500,
+        content={
+            "detail": f"Внутренняя ошибка сервера: {str(exc)}",
+            "type": type(exc).__name__,
+        }
+    )
 
 # CORS для локального клиента
 app.add_middleware(

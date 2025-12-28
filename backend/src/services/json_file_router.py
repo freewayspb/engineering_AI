@@ -1,11 +1,14 @@
 from __future__ import annotations
 
 import json
+import logging
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Awaitable, Callable, Dict
 
 from fastapi import HTTPException, UploadFile
+
+logger = logging.getLogger(__name__)
 
 from .file_handlers.arp_upload_service import convert_arp_upload_to_json
 from .file_handlers.dxf_console_service import convert_dxf_upload_to_json
@@ -86,6 +89,7 @@ async def load_raw_json_data(json_file: UploadFile) -> RoutedJsonPayload:
 
     filename = json_file.filename or "uploaded.json"
     suffix = Path(filename).suffix.lower()
+    logger.info("Loading file: %s (suffix: %s)", filename, suffix)
 
     handler_config = HANDLER_MAP.get(suffix)
 
@@ -116,8 +120,22 @@ async def load_raw_json_data(json_file: UploadFile) -> RoutedJsonPayload:
             filename=filename,
         )
 
-    converted_payload = await handler_config.handler(json_file)
-    serialized_json = json.dumps(converted_payload, indent=2, ensure_ascii=False)
+    try:
+        logger.debug("Calling handler for file: %s", filename)
+        converted_payload = await handler_config.handler(json_file)
+        logger.debug("Handler completed for file: %s, payload keys: %s", filename, list(converted_payload.keys()) if isinstance(converted_payload, dict) else "N/A")
+        serialized_json = json.dumps(converted_payload, indent=2, ensure_ascii=False)
+        logger.debug("JSON serialized, length: %d", len(serialized_json))
+    except HTTPException:
+        raise
+    except Exception as exc:
+        error_type = type(exc).__name__
+        error_msg = str(exc)
+        logger.error("Error in handler for file %s: %s: %s", filename, error_type, error_msg, exc_info=True)
+        raise HTTPException(
+            status_code=500,
+            detail=f"Ошибка обработки файла '{filename}' ({error_type}): {error_msg}"
+        ) from exc
 
     return RoutedJsonPayload(
         content=serialized_json,
